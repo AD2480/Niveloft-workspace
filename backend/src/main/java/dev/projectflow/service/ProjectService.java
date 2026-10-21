@@ -205,8 +205,7 @@ public class ProjectService {
         // Membership rows disappear with the project, so collect who must be told first.
         Set<Long> memberIds = members.findByProjectId(projectId).stream().map(m -> m.getUser().getId()).collect(Collectors.toSet());
         String name = a.project().getKey() + " (" + a.project().getName() + ")";
-        projects.delete(a.project()); // the database cascades to tasks, submissions, files, activity…
-        projects.flush();
+        projects.deleteProjectRow(projectId); // the database cascades to tasks, submissions, files, activity…
         storage.deleteKeys(keys);
         audit.record(a.userId(), projectId, "project.deleted", name, dev.projectflow.ops.AuditLog.OK, keys.size() + " file(s) removed");
         events.publishEvent(new LiveEvents.ProjectChanged(projectId, null, a.userId(), "PROJECT_DELETED", memberIds));
@@ -222,8 +221,7 @@ public class ProjectService {
                 .forEach(i -> notificationRepo.deleteAll(notificationRepo.findByInvitationId(i.getId())));
         Long id = p.getId();
         String name = p.getKey() + " (" + p.getName() + ")";
-        projects.delete(p);
-        projects.flush();
+        projects.deleteProjectRow(id);
         audit.record(ownerId, id, "project.deleted", name, dev.projectflow.ops.AuditLog.OK, "with the owner's account");
         return keys;
     }

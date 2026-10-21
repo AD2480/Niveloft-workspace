@@ -44,7 +44,7 @@ class LimitsTest {
         long id = ((Number) JsonPath.read(project, "$.data.id")).longValue();
         for (int i = 0; i < 2; i++) {
             mvc.perform(post("/api/projects/" + id + "/tasks").header("Authorization", token).contentType(MediaType.APPLICATION_JSON)
-                    .content(json.writeValueAsString(Map.of("title", "T" + i, "priority", "LOW")))).andExpect(status().isCreated());
+                    .content(json.writeValueAsString(Map.of("title", "Task " + i, "priority", "LOW")))).andExpect(status().isCreated());
         }
         mvc.perform(post("/api/projects/" + id + "/tasks").header("Authorization", token).contentType(MediaType.APPLICATION_JSON)
                         .content(json.writeValueAsString(Map.of("title", "One too many", "priority", "LOW"))))

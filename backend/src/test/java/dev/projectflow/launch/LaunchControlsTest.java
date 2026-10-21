@@ -252,7 +252,7 @@ class LaunchControlsTest {
                 .andExpect(status().isOk()).andReturn().getResponse();
         String onlyCookie = cookieValue(keptThird.getHeader("Set-Cookie"));
         mvc.perform(post("/api/auth/logout").header("Origin", "https://evil.example")
-                .cookie(new jakarta.servlet.http.Cookie("niveloft-session", onlyCookie))).andExpect(status().isUnauthorized());
+                .cookie(new jakarta.servlet.http.Cookie("niveloft-session", onlyCookie))).andExpect(status().isForbidden());
         renew(onlyCookie, APP).andExpect(status().isOk());
         mvc.perform(post("/api/auth/logout").header("Origin", APP)
                 .cookie(new jakarta.servlet.http.Cookie("niveloft-session", onlyCookie))).andExpect(status().isOk());
@@ -305,6 +305,25 @@ class LaunchControlsTest {
     // ------------------------------------------------------------------ ownership and deletion
 
     @Test
+    @DisplayName("Only the owner can delete a shared project; its tasks and memberships are removed too")
+    void deleteProject() throws Exception {
+        Account owner = register("Dana Owner", handle() + "@launch.test");
+        Account mate = register("Milo Member", handle() + "@launch.test");
+        long projectId = project(owner);
+        join(owner, mate, projectId, "MEMBER");
+        String task = text(call(owner.token(), post("/api/projects/" + projectId + "/tasks"),
+                Map.of("title", "Project deletion evidence", "priority", "HIGH")).andExpect(status().isCreated()));
+        long taskId = ((Number) JsonPath.read(task, "$.data.id")).longValue();
+
+        call(mate.token(), delete("/api/projects/" + projectId), null).andExpect(status().isForbidden());
+        call(owner.token(), delete("/api/projects/" + projectId), null).andExpect(status().isOk());
+        call(owner.token(), get("/api/projects/" + projectId), null).andExpect(status().isNotFound());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM projects WHERE id = ?", Integer.class, projectId)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM tasks WHERE id = ?", Integer.class, taskId)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_members WHERE project_id = ?", Integer.class, projectId)).isZero();
+    }
+
+    @Test
     @DisplayName("Account deletion: blocked while owning a shared project; after a transfer it removes the person but keeps the team's history")
     void deleteAccount() throws Exception {
         Account owner = register("Omar Owner", handle() + "@launch.test");
@@ -316,6 +335,7 @@ class LaunchControlsTest {
         long taskId = ((Number) JsonPath.read(task, "$.data.id")).longValue();
         call(owner.token(), post("/api/tasks/" + taskId + "/comments"), Map.of("body", "Draft is in the shared folder.")).andExpect(status().isCreated());
         long solo = project(owner); // owned alone: goes with the account
+        long anotherSolo = project(owner);
 
         String check = text(call(owner.token(), get("/api/users/me/deletion-check"), null).andExpect(status().isOk()));
         assertThat((Boolean) JsonPath.read(check, "$.data.canDelete")).isFalse();
@@ -350,6 +370,7 @@ class LaunchControlsTest {
         call(null, post("/api/auth/login"), Map.of("email", owner.email(), "password", PASSWORD)).andExpect(status().isUnauthorized());
         // The solo project is gone; the shared one keeps the comment, by "Deleted user".
         call(mate.token(), get("/api/projects/" + solo), null).andExpect(status().isNotFound());
+        call(mate.token(), get("/api/projects/" + anotherSolo), null).andExpect(status().isNotFound());
         String comments = text(call(mate.token(), get("/api/tasks/" + taskId + "/comments"), null).andExpect(status().isOk()));
         assertThat(comments).contains("Draft is in the shared folder.").contains("Deleted user").doesNotContain(owner.email());
         Integer left = jdbc.queryForObject("SELECT COUNT(*) FROM users WHERE email = ?", Integer.class, owner.email());

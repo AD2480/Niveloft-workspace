@@ -203,6 +203,9 @@ public class AccountService {
 
         List<String> keys = new ArrayList<>();
         for (Owned o : owned) keys.addAll(projects.deleteSoleOwned(o.project(), me));
+        // Project deletion clears entities whose rows the database cascaded away.
+        // Reload the account so the anonymisation below is persisted by dirty checking.
+        u = users.findById(me).orElseThrow();
         projects.leaveAllForDeletedAccount(u);
 
         Timestamp ts = Timestamp.from(now);

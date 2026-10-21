@@ -90,7 +90,7 @@ class OperationsTest {
         String again = body(call(owner, post("/api/projects/" + projectId + "/tasks").header("Idempotency-Key", key), req)
                 .andExpect(status().isCreated()).andExpect(header().string("Idempotent-Replayed", "true")));
         assertThat(again).isEqualTo(first);
-        String list = body(call(owner, get("/api/projects/" + projectId + "/tasks?search=Only%20once"), null).andExpect(status().isOk()));
+        String list = body(call(owner, get("/api/projects/" + projectId + "/tasks").param("search", "Only once"), null).andExpect(status().isOk()));
         assertThat((Integer) JsonPath.read(list, "$.data.totalElements")).isEqualTo(1);
         // The same key for a different request is refused.
         call(owner, post("/api/projects/" + projectId + "/tasks").header("Idempotency-Key", key), Map.of("title", "Something else", "priority", "LOW"))
@@ -111,7 +111,7 @@ class OperationsTest {
             Callable<Integer> submit = () -> {
                 go.await();
                 MockMultipartFile data = new MockMultipartFile("data", "", MediaType.APPLICATION_JSON_VALUE,
-                        json.writeValueAsBytes(Map.of("notes", "Done.", "evidence", List.of(Map.of("kind", "LINK", "url", "https://example.com/pr/1")))));
+                        json.writeValueAsBytes(Map.of("notes", "Implemented and verified the requirement.", "evidence", List.of(Map.of("kind", "LINK", "url", "https://example.com/pr/1")))));
                 return mvc.perform(multipart("/api/tasks/" + taskId + "/submissions").file(data).header("Authorization", "Bearer " + owner.token()))
                         .andReturn().getResponse().getStatus();
             };
