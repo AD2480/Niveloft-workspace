@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -45,6 +46,7 @@ public class PasswordPolicy {
     private final LaunchProperties.Passwords config;
     private final HttpClient http;
 
+    @Autowired
     public PasswordPolicy(LaunchProperties launch) {
         this(load(), (launch == null ? LaunchProperties.defaults() : launch).passwordsOrDefault(),
                 HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3)).build());
