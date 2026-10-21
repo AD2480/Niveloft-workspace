@@ -1,0 +1,51 @@
+# Uptime monitoring: every 15 minutes, checks that the site loads and the API is healthy
+# (the database answers). If a check fails three times in a row, the run fails and GitHub emails
+# the repository's owner (Settings → Notifications → Actions).
+#
+# Set these repository variables (Settings → Secrets and variables → Actions → Variables):
+#   FRONTEND_URL  e.g. https://projectflow.vercel.app
+#   BACKEND_URL   e.g. https://projectflow-api.up.railway.app   (no /api at the end)
+# Without them, the workflow does nothing.
+name: Uptime
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check the site and the API
+        env:
+          FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+          BACKEND_URL: ${{ vars.BACKEND_URL }}
+        run: |
+          if [ -z "$FRONTEND_URL" ] && [ -z "$BACKEND_URL" ]; then
+            echo "Set the FRONTEND_URL and BACKEND_URL repository variables to monitor the deployed site."
+            exit 0
+          fi
+          failed=0
+          probe() { # name, url, text that must be in the response
+            for attempt in 1 2 3; do
+              out=$(curl -sS -m 20 -w '\n%{http_code} %{time_total}' "$2" 2>&1) || true
+              code=$(echo "$out" | tail -n1 | cut -d' ' -f1)
+              time=$(echo "$out" | tail -n1 | cut -d' ' -f2)
+              if [ "$code" = "200" ] && echo "$out" | grep -q "$3"; then
+                echo "UP    $1  ${time}s  $2"
+                return 0
+              fi
+              sleep 10
+            done
+            echo "DOWN  $1  (HTTP $code)  $2"
+            echo "::error title=$1 is down::$2 answered HTTP $code three times in a row"
+            failed=1
+          }
+          [ -n "$FRONTEND_URL" ] && probe "Site" "${FRONTEND_URL%/}/" "<div id=\"root\">"
+          [ -n "$BACKEND_URL" ] && probe "API" "${BACKEND_URL%/}/actuator/health/readiness" '"status":"UP"'
+          exit $failed

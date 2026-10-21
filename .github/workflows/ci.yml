@@ -1,0 +1,89 @@
+# Release gates for every pull request and every push to main: the backend's tests, the
+# frontend's type check, lint, tests and production build, a dependency audit, a secret scan of
+# the tree and its history, the migration rules, the launch register, and the forecast kit's
+# tests. No secrets are available to these jobs, so pull requests from forks are safe to run.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Tests (H2, the same Flyway migrations) and package
+        working-directory: backend
+        run: ./mvnw -B -ntp verify
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Locked dependencies
+        run: |
+          test -f package-lock.json || { echo "::error file=frontend/package.json::Commit frontend/package-lock.json (run npm install once) so every build installs the same versions."; exit 1; }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - name: Production build against the real API
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: https://api.example.com/api
+          VITE_SITE_URL: https://app.example.com
+          VITE_SECURITY_CONTACT: security@example.com
+      - name: Known vulnerabilities in runtime dependencies (high and critical)
+        run: npm audit --audit-level=high --omit=dev
+
+  release-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Secrets in the tree and the whole history
+        run: node scripts/secret-scan.mjs --history
+      - name: Migrations are additive and released ones unchanged
+        run: node scripts/check-migrations.mjs
+      - name: Launch register covers every check
+        run: node scripts/launch-register.mjs --check
+
+  ml:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r ml/requirements.txt
+      - name: Forecast kit tests
+        working-directory: ml
+        run: python -m unittest discover -s tests -t .

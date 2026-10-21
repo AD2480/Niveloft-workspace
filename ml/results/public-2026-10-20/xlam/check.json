@@ -1,0 +1,53 @@
+{
+  "records": 60000,
+  "usable": 58369,
+  "unusable": 1631,
+  "duplicate_ids": 0,
+  "issues": {
+    "bad_json": 0,
+    "no_query": 0,
+    "bad_tools": 0,
+    "duplicate_tool": 260,
+    "no_answers": 0,
+    "bad_answer": 0,
+    "unknown_function": 0,
+    "unknown_argument": 0,
+    "missing_required": 275,
+    "wrong_type": 1125
+  },
+  "examples": {
+    "duplicate_tool": [
+      81,
+      136,
+      152,
+      508,
+      782
+    ],
+    "missing_required": [
+      65,
+      218,
+      279,
+      301,
+      436
+    ],
+    "wrong_type": [
+      81,
+      130,
+      136,
+      152,
+      197
+    ]
+  },
+  "strata": {
+    "simple": 27719,
+    "multiple": 18326,
+    "parallel": 10895,
+    "parallel multiple": 1429
+  },
+  "source": {
+    "file": "xlam_function_calling_60k.json",
+    "sha256": "4ef5c6f0dc552f2231f93f5853a9ef431e9e806d7aa514d0f6b615606ce576c6",
+    "records": 60000,
+    "usable": 58369
+  }
+}

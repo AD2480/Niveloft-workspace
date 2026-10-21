@@ -1,0 +1,24 @@
+# MySQL 8.4 LTS for local development.
+#   docker compose up -d        (from the backend folder)
+# Data persists in the "projectflow-mysql" volume. Remove it with: docker compose down -v
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: projectflow-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: projectflow
+      MYSQL_USER: projectflow
+      MYSQL_PASSWORD: projectflow
+      MYSQL_ROOT_PASSWORD: root-dev-only
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"]
+    volumes:
+      - projectflow-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uprojectflow", "-pprojectflow"]
+      interval: 5s
+      retries: 20
+
+volumes:
+  projectflow-mysql:

@@ -1,0 +1,43 @@
+{
+  "_about": "Public datasets for first experiments, before your own history is big enough. Licences as recorded on 2026-10-14 and checked against the downloads' own READMEs on 2026-10-20; check each source again before use. A model trained on data whose licence forbids commercial use is never saved by this kit.",
+  "apache-jira": {
+    "name": "Apache Jira Issues",
+    "where": "Kaggle (search for “Apache Jira Issues”)",
+    "licence": "Not checked here: read the dataset page before use.",
+    "commercial_use": "unknown",
+    "use": "Issue-history experiments for task duration: python -m niveloft_ml public jira --data issues.csv --mapping examples/jira-mapping.json",
+    "caution": "Jira exports name their columns differently; examples/jira-mapping.json is a starting point, not checked against this dataset. Jira has no start or review dates, so the time measured is created → resolved."
+  },
+  "pm-risk-raw": {
+    "name": "Project Management Risk Raw",
+    "where": "Kaggle",
+    "licence": "Not checked here: read the dataset page before use.",
+    "commercial_use": "unknown",
+    "use": "Project-risk classification: python -m niveloft_ml public tabular --data file.csv --target <risk column> --classify",
+    "caution": "Its columns weren't available here; choose the target column after looking at the file."
+  },
+  "support-tickets": {
+    "name": "Multilingual Customer Support Tickets",
+    "where": "Kaggle (Ticket Dataset) and the creator's Hugging Face release: aa_dataset-tickets-multi-lang-5-2-50-version.csv (newest), dataset-tickets-multi-lang-4-20k.csv, dataset-tickets-german_normalized_50_5_2.csv",
+    "licence": "CC-BY-NC-4.0 (the creator’s current Hugging Face release)",
+    "commercial_use": "no",
+    "use": "Ticket priority from text: python -m niveloft_ml public tickets --data <file> --text subject,body --label priority (each version on its own)",
+    "caution": "Non-commercial: experiments only. Don’t assume the current version permits training a model for a product that’s sold. The tickets are synthetic, and the versions share thousands of tickets, so never pool them."
+  },
+  "xlam-function-calling-60k": {
+    "name": "Salesforce xLAM Function Calling 60K",
+    "where": "Hugging Face (Salesforce/xlam-function-calling-60k)",
+    "licence": "CC-BY-4.0, and you must accept the dataset’s access conditions on Hugging Face",
+    "commercial_use": "allowed with attribution, subject to the access conditions",
+    "use": "Measuring a model’s general function calling before any fine-tuning: python -m niveloft_ml xlam --data xlam_function_calling_60k.json, then python -m niveloft_ml tools --base-url <an OpenAI-compatible API> --model <model> --xlam xlam_function_calling_60k.json (the fixed sample of 200 when the file’s hash matches)",
+    "caution": "60,000 examples of requests mapped to functions and arguments; 1,631 fail structural checks and are never sampled. Its README says the release supports an academic paper and asks you to cite APIGen. Use it for measurement first; train on it only if a measured gap calls for it."
+  },
+  "desharnais": {
+    "name": "Desharnais software effort (81 projects, from the PROMISE repository)",
+    "where": "The PROMISE Software Engineering Repository's 02.desharnais.arff (the Kaggle notebook uses the same data)",
+    "licence": "Not checked here: read the source before use.",
+    "commercial_use": "unknown",
+    "use": "Effort-estimation research: python -m niveloft_ml public effort --data 02.desharnais.arff (ARFF or CSV)",
+    "caution": "Effort is in person-hours for whole projects, not tasks. Project, Length and YearEnd are never inputs: an identifier, and two things known only once a project is over. -1 means not recorded. PROMISE asks that work using it follow its acknowledgement guidelines."
+  }
+}

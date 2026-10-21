@@ -1,0 +1,5 @@
+# Optional models for `python -m niveloft_ml train --with xgboost,autogluon`.
+# Not installed or run in this repository's checks: the kit says so in its report when one is
+# asked for but missing.
+xgboost>=2.0
+autogluon.tabular>=1.1

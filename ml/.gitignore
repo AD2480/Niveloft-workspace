@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+ml-report*/
+*.joblib
+# Your exported task histories stay on your machine.
+*-task-history-v1.csv
+# The xLAM download itself (gated, CC-BY-4.0) stays on your machine; the fixed sample is ids only.
+xlam*.json
+xlam*.jsonl
+!eval_cases/xlam-sample.json

@@ -1,0 +1,1202 @@
+@import 'tailwindcss';
+/* Geist: the interface and everything you read. Archivo (its width axis): headlines and big readings. */
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/archivo/wdth.css';
+
+/* Class-based dark mode: <html class="dark"> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Niveloft design tokens: the snowpack.
+ *
+ * Niveloft reads a project the way a forecaster reads snow, in layers: fresh snow on top (work not
+ * started), settling layers (in progress, in review), firm snow at the base (approved), and the weak
+ * layer that gives way (the late task holding the rest up). Those five colours are the only colours
+ * that carry meaning in charts, the 3D views and progress bars, and they are the same everywhere.
+ *
+ * Light is a bright snowfield: a cool off-white canvas, white surfaces, night-blue ink. Glacier blue
+ * marks actions, links, focus and the selected item, nothing else. Red is the weak layer (and
+ * destructive actions). Dark is the same mountain at night.
+ * Every text colour is at least 4.5:1 on the canvas and on every surface, in both themes.
+ *
+ * Components use the semantic utilities (bg-surface, text-muted, border-line, bg-strata-review…),
+ * never raw hex for chrome.
+ */
+:root {
+  /* Brand colours for imagery (never carry text or status on their own). */
+  --snow: #f2f5f8;
+  --graphite: #0d1b27;
+  --slate: #53616e;
+  --ice: #1b4b73;
+  --glacier: #dbe6ee;
+  --frost: #a9cde3;
+  --glow: #f1c27b;
+
+  --canvas: #f2f5f8;
+  --sidebar: #ebf0f4;
+  --surface: #ffffff;
+  --surface-2: #f7f9fb;
+  --surface-3: #eaeff3;
+  --line: #dde4ea;
+  --line-strong: #c2ccd5;
+  --ink: #0d1b27;
+  --ink-2: #2a3946;
+  --muted: #53616e;
+  --subtle: #5a6875; /* ≥ 4.5:1 on canvas and every surface (WCAG AA) */
+
+  /* Glacier blue: primary actions (white text, 9.1:1), links, focus, the selected item. */
+  --brand: #1b4b73;
+  --brand-hover: #143b5c;
+  --brand-soft: #e2ecf5;
+  --brand-ink: #173f61;
+  --accent: #1b4b73;
+  --accent-display: #0d1b27;
+
+  --success: #1c6b4c;
+  --success-soft: #e2f1e9;
+  --warning: #8a5800;
+  --warning-soft: #fbefd9;
+  --danger: #bf3520;
+  --danger-soft: #fbe7e2;
+  --info: #245e8c;
+  --info-soft: #e3edf6;
+
+  /* The snowpack: one colour per state, used for every chart, bar and 3D layer. */
+  --strata-todo: #8b9aa8; /* fresh snow: not started */
+  --strata-progress: #2f7bc0; /* settling: in progress */
+  --strata-review: #d4952a; /* waiting to bond: in review */
+  --strata-done: #2a8462; /* firm: approved */
+  --strata-weak: #d9432b; /* the weak layer: late work holding others up */
+
+  --ring: rgb(27 75 115 / 0.45);
+  --shadow-color: 207 40% 12%;
+
+  /* The plate a block of snowpack stands on: a cool sky, lighter at the top. */
+  --plate-top: #f5f8fa;
+  --plate-bottom: #e3eaf0;
+
+  /* Kept under their older names: the same colours, for charts and the 3D views. */
+  --status-todo: var(--strata-todo);
+  --status-progress: var(--strata-progress);
+  --status-review: var(--strata-review);
+  --status-done: var(--strata-done);
+  --series-1: #2f7bc0;
+  --series-2: #2a8462;
+  --model-todo: #c9d3dc;
+  --model-progress: #3d82c2;
+  --model-review: #d79a32;
+  --model-done: #2f8a68;
+  --model-ground: #f6f8fa;
+  /* Kinds of member (Prediction model): distinct in hue and lightness. */
+  --role-owner: #1b4b73;
+  --role-manager: #b7791f;
+  --role-member: #23704d;
+  --role-viewer: #7a4fb5;
+  --role-none: #7b8a96;
+  color-scheme: light;
+}
+
+/* Dark: the mountain at night. Night-blue canvas, slate surfaces that stand clear of it, ice blue for actions. */
+.dark {
+  --snow: #f2f5f8;
+  --graphite: #0a131b;
+  --slate: #97a6b5;
+  --ice: #93c5ea;
+  --glacier: #182634;
+  --frost: #5c8eaf;
+  --glow: #f1c27b;
+
+  --canvas: #0a131b;
+  --sidebar: #0c1720;
+  --surface: #101b24;
+  --surface-2: #14202b;
+  --surface-3: #1b2834;
+  --line: #233140;
+  --line-strong: #344659;
+  --ink: #e7eef4;
+  --ink-2: #c3ceda;
+  --muted: #97a6b5;
+  --subtle: #8d9eaf;
+
+  /* Ice blue with dark text (10:1). */
+  --brand: #93c5ea;
+  --brand-hover: #b3d7f1;
+  --brand-soft: #16304a;
+  --brand-ink: #cce4f5;
+  --accent: #93c5ea;
+  --accent-display: #e7eef4;
+
+  --success: #6fc69c;
+  --success-soft: #11251c;
+  --warning: #e3b25c;
+  --warning-soft: #2a2112;
+  --danger: #f2826b;
+  --danger-soft: #2f1611;
+  --info: #8ebce0;
+  --info-soft: #132434;
+
+  /* Checked with the palette validator against the dark surface: every adjacent pair in the bar's
+     order stays apart for colour-blind readers. Not started stays a light neutral: fresh snow. */
+  --strata-todo: #9aa5af;
+  --strata-progress: #3a86cc;
+  --strata-review: #d0a046;
+  --strata-done: #2b9670;
+  --strata-weak: #d23f29;
+
+  --ring: rgb(147 197 234 / 0.55);
+  --shadow-color: 210 60% 2%;
+
+  --plate-top: #0f1a24;
+  --plate-bottom: #15242f;
+
+  --series-1: #4b9ce2;
+  --series-2: #34a77d;
+  --model-todo: #3a4a5a;
+  --model-progress: #3a86cc;
+  --model-review: #d0a046;
+  --model-done: #2b9670;
+  --model-ground: #0e1821;
+  --role-owner: #8cc4e0;
+  --role-manager: #e3b25c;
+  --role-member: #6cc59a;
+  --role-viewer: #c3a6f0;
+  --role-none: #98a8b5;
+  color-scheme: dark;
+}
+
+@theme inline {
+  /* Geist for the interface; Archivo, set wide, for headlines and big readings. Task keys and numbers
+     use Geist's tabular figures (font-mono is kept as a name for them, so they line up). */
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Archivo Variable', 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-code: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-wide: 'Archivo Variable', 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Older name for small readings: now plain Geist (no monospaced labels anywhere). */
+  --font-hud: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --color-snow: var(--snow);
+  --color-graphite: var(--graphite);
+  --color-slate: var(--slate);
+  --color-ice: var(--ice);
+  --color-glacier: var(--glacier);
+  --color-frost: var(--frost);
+  --color-glow: var(--glow);
+
+  --color-canvas: var(--canvas);
+  --color-sidebar: var(--sidebar);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-ink: var(--brand-ink);
+  --color-accent: var(--accent);
+  --color-accent-display: var(--accent-display);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  --color-strata-todo: var(--strata-todo);
+  --color-strata-progress: var(--strata-progress);
+  --color-strata-review: var(--strata-review);
+  --color-strata-done: var(--strata-done);
+  --color-strata-weak: var(--strata-weak);
+
+  /* Radius follows hierarchy: small chips, 8px controls, 12px cards, 16px panels, 20px dialogs. */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+
+  /* Hairlines and spacing do most of the work. Cards sit on the canvas with a whisper of shadow;
+     only floating things (menus, dialogs, Flurry) lift. */
+  --shadow-card: 0 1px 2px hsl(var(--shadow-color) / 0.05), 0 1px 1px hsl(var(--shadow-color) / 0.03);
+  --shadow-raised: 0 1px 2px hsl(var(--shadow-color) / 0.06), 0 8px 24px -12px hsl(var(--shadow-color) / 0.18);
+  --shadow-pop: 0 18px 44px -14px hsl(var(--shadow-color) / 0.3), 0 3px 8px -3px hsl(var(--shadow-color) / 0.12);
+  --shadow-float: 0 28px 64px -24px hsl(var(--shadow-color) / 0.4), 0 8px 18px -10px hsl(var(--shadow-color) / 0.18);
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-fade-in: fade-in 160ms ease-out;
+  --animate-pop-in: pop-in 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-slide-in-left: slide-in-left 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-slide-in-right: slide-in-right 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* Waits 150 ms (fast loads show nothing), then creeps towards 90% without claiming to be done. */
+  --animate-route-progress: route-progress 9s cubic-bezier(0.08, 0.7, 0.2, 1) 150ms both;
+  --animate-rise-in: rise-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-bar-finish: bar-finish 400ms ease-out both;
+}
+
+@keyframes bar-finish {
+  0% {
+    opacity: 1;
+    transform: scaleX(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes route-progress {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.02);
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(0.9);
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pop-in {
+  /* Only scale/opacity: centring uses the separate `translate` property. */
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@layer base {
+  /* A grid without explicit columns gets one column that can shrink, so a wide child (a canvas,
+     a table in a scroll box) can't push the page wider than the phone. grid-cols-* still wins. */
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans;
+    font-size: 14px;
+    line-height: 1.5;
+    font-feature-settings: 'ss01', 'calt';
+  }
+  /* Tabular figures wherever numbers are compared: task keys, tables, dates and metrics line up.
+     Running text keeps proportional figures, which read better in a sentence. */
+  .font-mono,
+  table,
+  time,
+  input,
+  output {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Page titles: Archivo, a little wide. Section headings stay Geist, set by size and weight. */
+  h1 {
+    font-family: var(--font-display);
+    font-stretch: 108%;
+    font-weight: 650;
+    letter-spacing: -0.012em;
+    line-height: 1.12;
+  }
+  h2,
+  h3 {
+    letter-spacing: -0.008em;
+  }
+  code,
+  pre,
+  kbd {
+    font-family: var(--font-code);
+  }
+  a {
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  *,
+  ::before,
+  ::after {
+    border-color: var(--line);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+  /* Browser autofill paints inputs pale blue (dark blue-grey in dark mode). Keep them on-palette. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: var(--ink);
+    -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+    box-shadow: 0 0 0 1000px var(--surface) inset;
+    caret-color: var(--ink);
+    transition: background-color 9999s ease-out 0s;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--brand) 22%, transparent);
+  }
+}
+
+/* Replay scrubber on the 3D model: a hairline track and a round handle. */
+.model-scrubber {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 24px;
+  background: transparent;
+  cursor: pointer;
+}
+.model-scrubber::-webkit-slider-runnable-track {
+  height: 1px;
+  background: transparent;
+}
+.model-scrubber::-moz-range-track {
+  height: 1px;
+  background: transparent;
+}
+.model-scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 9999px;
+  background: var(--ink);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px hsl(var(--shadow-color) / 0.3);
+}
+.model-scrubber::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: var(--ink);
+  border: 2px solid var(--surface);
+}
+.model-scrubber:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@layer utilities {
+  /* Display type: Archivo, wide and heavy, for the public pages' headlines and the biggest readings. */
+  .display-wide {
+    font-family: var(--font-wide);
+    font-stretch: 118%;
+    font-weight: 760;
+    letter-spacing: -0.022em;
+    line-height: 0.98;
+  }
+  /* The widest cut, for a few words set large (the front page's headline). */
+  .display-poster {
+    font-family: var(--font-wide);
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.94;
+  }
+  /* Readings: a number or date that is the answer (24 Oct – 2 Nov). */
+  .reading {
+    font-family: var(--font-wide);
+    font-stretch: 112%;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  /* Kept under older names (now plain sentence-case styles). */
+  .display-place {
+    font-family: var(--font-wide);
+    font-stretch: 112%;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .accent-serif {
+    font-style: normal;
+    font-weight: inherit;
+    color: var(--accent-display);
+  }
+  /* Small label above a heading: sentence case, quiet. */
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--muted);
+  }
+  /* Small labels (table heads, meta, status words): sentence case, medium weight. */
+  .caps {
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .overline {
+    font-size: 12.5px;
+    font-weight: 550;
+    letter-spacing: 0;
+  }
+  .numeral {
+    font-family: var(--font-wide);
+    font-stretch: 108%;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  /* The plate behind a block of snowpack (project cards, the Overview's block). */
+  .bg-plate {
+    background-image: linear-gradient(180deg, var(--plate-top), var(--plate-bottom));
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  /* A hairline under the sticky top bar once the page scrolls. */
+  .hairline-b {
+    box-shadow: inset 0 -1px 0 var(--line);
+  }
+}
+
+/* Loading placeholders: a soft light sweeping across (a flat block when motion is reduced). */
+.skeleton {
+  background-color: var(--surface-3);
+  background-image: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--surface) 55%, transparent) 50%, transparent 100%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* The front page's header sits over the first screen, clear, until the page scrolls. */
+header.public-header--overlay[data-scrolled='false'] {
+  background-color: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+/* Sticky headers lift off the page with a soft shadow once it has scrolled (set by ScrollProgress). */
+header[data-scrolled] {
+  transition: box-shadow 200ms ease;
+}
+header[data-scrolled='true'] {
+  box-shadow: 0 10px 24px -18px hsl(var(--shadow-color) / 0.45);
+}
+
+
+/* Expandable questions (FAQ and notes): a chevron that turns, and no browser triangle. */
+details.disclosure > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+details.disclosure > summary .disclosure-icon {
+  transition: transform 200ms ease;
+}
+details.disclosure[open] > summary .disclosure-icon {
+  transform: rotate(180deg);
+}
+details.disclosure[open] > .disclosure-body {
+  animation: rise-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* A question opened from a link (#faq-…) is briefly highlighted. */
+details.disclosure:target > summary,
+details.disclosure[data-flash='true'] > summary {
+  background: var(--brand-soft);
+}
+
+/* Only on paper (the print header, notes in place of 3D scenes); hidden on screen. */
+[data-print='only'],
+[data-print='canvas-note'] {
+  display: none;
+}
+
+/*
+ * Flurry, the assistant (features/flurry/FlurryFigure.tsx). Idle: a slow float, a blink every few
+ * seconds and a look around now and then. Each mood is a pose: it changes the eyes, brows, mouth and
+ * arms, and some add flakes, sparkles or z's. All of it stops under reduced motion or when the person
+ * turns Flurry's motion off (.flurry--still).
+ */
+.flurry {
+  overflow: visible;
+}
+.flurry__float {
+  transform-box: view-box;
+  transform-origin: 60px 60px;
+  animation: flurry-float 5.6s ease-in-out infinite;
+}
+.flurry__body {
+  transform-box: view-box;
+  transform-origin: 60px 106px;
+  transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.flurry__eyes {
+  animation: flurry-look 16s ease-in-out infinite;
+  transition: transform 260ms ease;
+}
+.flurry__eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    transform 260ms ease,
+    opacity 160ms ease;
+  animation: flurry-blink 6.2s ease-in-out infinite;
+}
+.flurry__arm-left {
+  transform-box: view-box;
+  transform-origin: 30px 76px;
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.flurry__arm-right {
+  transform-box: view-box;
+  transform-origin: 90px 65px;
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: flurry-wave 24s ease-in-out 6s infinite;
+}
+.flurry__brows {
+  opacity: 0;
+  transform-box: view-box;
+  transition:
+    opacity 200ms ease,
+    transform 260ms ease;
+}
+.flurry__brow-left,
+.flurry__brow-right {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 260ms ease;
+}
+.flurry__happy,
+.flurry__mouth--open,
+.flurry__mouth--o,
+.flurry__mouth--flat {
+  opacity: 0;
+}
+.flurry__happy,
+.flurry__mouth {
+  transition: opacity 160ms ease;
+}
+.flurry__flakes path,
+.flurry__sparkles path,
+.flurry__zzz path {
+  opacity: 0;
+}
+.flurry__flakes path {
+  transform-box: view-box;
+  transform-origin: 60px 60px;
+}
+.flurry__sparkles path,
+.flurry__zzz path {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+/* The eyes follow the pointer, or look at what Flurry is showing you (--gx/--gy on an ancestor). */
+.flurry__gaze {
+  transform: translate(var(--gx, 0px), var(--gy, 0px));
+  transition: transform 180ms ease-out;
+}
+
+/* 16–32 px: the silhouette and the eyes, nothing else. */
+.flurry--mini .flurry__detail,
+.flurry--mini .flurry__brows {
+  display: none;
+}
+.flurry--mini .flurry__outline {
+  stroke-width: 3.4;
+}
+.flurry--mini .flurry__arm-left,
+.flurry--mini .flurry__arm-right {
+  stroke-width: 3;
+}
+
+/* Curious: turns towards you, eyes a little wider, brows up. */
+.flurry--curious .flurry__eye {
+  transform: scale(1.1);
+}
+.flurry--curious .flurry__brows {
+  opacity: 0.85;
+  transform: translateY(-1.5px);
+}
+.flurry--curious .flurry__body {
+  transform: rotate(-3deg) translateY(-1px);
+}
+
+/* Carried: stretched from the tuft, arms up, a small "o". The sway comes from --flurry-sway. */
+.flurry--dragged .flurry__float {
+  animation: none;
+}
+.flurry--dragged .flurry__body {
+  transform-origin: 60px 16px;
+  transform: rotate(var(--flurry-sway, 0deg)) scale(0.93, 1.07);
+  transition: transform 120ms linear;
+}
+.flurry--dragged .flurry__arm-left {
+  transform: rotate(58deg);
+}
+.flurry--dragged .flurry__arm-right {
+  animation: none;
+  transform: rotate(-22deg);
+}
+.flurry--dragged .flurry__eyes {
+  animation: none;
+}
+.flurry--dragged .flurry__eye {
+  animation: none;
+  transform: scale(1.12);
+}
+.flurry--dragged .flurry__brows {
+  opacity: 0.9;
+  transform: translateY(-2.5px);
+}
+.flurry--dragged .flurry__mouth--smile {
+  opacity: 0;
+}
+.flurry--dragged .flurry__mouth--o {
+  opacity: 1;
+}
+/* Put down: a small squash, once. */
+.flurry--landed .flurry__body {
+  animation: flurry-land 560ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+/* Thinking: eyes up and to the side, brows a little lower, two flakes circling slowly. */
+.flurry--thinking .flurry__flakes path {
+  opacity: 1;
+  animation: flurry-orbit 2.8s linear infinite;
+}
+.flurry--thinking .flurry__flakes path:nth-child(2) {
+  animation-delay: -1.4s;
+}
+.flurry--thinking .flurry__eyes {
+  animation: none;
+  transform: translate(1.6px, -2.2px);
+}
+.flurry--thinking .flurry__brows {
+  opacity: 0.7;
+  transform: translateY(0.8px);
+}
+.flurry--thinking .flurry__mouth--smile {
+  opacity: 0;
+}
+.flurry--thinking .flurry__mouth--flat {
+  opacity: 1;
+}
+
+/* Something worked: eyes closed in a smile, mouth open, a hop and sparkles. Plays once. */
+.flurry--success .flurry__eye {
+  opacity: 0;
+  animation: none;
+}
+.flurry--success .flurry__happy,
+.flurry--success .flurry__mouth--open {
+  opacity: 1;
+}
+.flurry--success .flurry__mouth--smile {
+  opacity: 0;
+}
+.flurry--success .flurry__arm-right {
+  animation: none;
+  transform: rotate(-14deg);
+}
+.flurry--success .flurry__arm-left {
+  transform: rotate(24deg);
+}
+.flurry--success .flurry__float {
+  animation: flurry-hop 900ms ease-out both;
+}
+.flurry--success .flurry__sparkles path {
+  animation: flurry-sparkle 1s ease-out both;
+}
+.flurry--success .flurry__sparkles path:nth-child(2) {
+  animation-delay: 120ms;
+}
+.flurry--success .flurry__sparkles path:nth-child(3) {
+  animation-delay: 220ms;
+}
+
+/* Something failed: a small droop, worried brows. */
+.flurry--error .flurry__body {
+  transform: rotate(-2deg);
+}
+.flurry--error .flurry__eye {
+  animation: none;
+  transform: scaleY(0.8) translateY(1px);
+}
+.flurry--error .flurry__eyes {
+  animation: none;
+  transform: translate(-1px, 1.5px);
+}
+.flurry--error .flurry__brows {
+  opacity: 0.85;
+}
+.flurry--error .flurry__brow-left {
+  transform: rotate(-10deg);
+}
+.flurry--error .flurry__brow-right {
+  transform: rotate(10deg);
+}
+.flurry--error .flurry__mouth--smile {
+  opacity: 0;
+}
+.flurry--error .flurry__mouth--flat {
+  opacity: 1;
+}
+
+/* Something needs you: brows up, a glance up at the indicator, one arm raised a little. */
+.flurry--attention .flurry__brows {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+.flurry--attention .flurry__eyes {
+  animation: none;
+  transform: translate(1.8px, -1.8px);
+}
+.flurry--attention .flurry__body {
+  transform: rotate(2deg);
+}
+.flurry--attention .flurry__arm-right {
+  animation: none;
+  transform: rotate(-10deg);
+}
+
+/* Pointing: the right arm straight out towards --flurry-aim (degrees below the horizontal). */
+.flurry--point .flurry__arm-right {
+  animation: none;
+  transform: rotate(calc(50deg + var(--flurry-aim, 0deg)));
+}
+.flurry--point .flurry__eyes {
+  animation: none;
+  transform: translate(2.4px, var(--flurry-look-y, 0px));
+}
+.flurry--point .flurry__body {
+  transform: rotate(4deg);
+}
+.flurry--point .flurry__brows {
+  opacity: 0.6;
+}
+
+/* Settled (you're typing elsewhere): eyes half closed, floating less. */
+.flurry--settled .flurry__eye {
+  animation: none;
+  transform: scaleY(0.42) translateY(2px);
+}
+.flurry--settled .flurry__eyes,
+.flurry--settled .flurry__arm-right {
+  animation: none;
+}
+.flurry--settled .flurry__float {
+  animation: flurry-float-soft 8s ease-in-out infinite;
+}
+.flurry--listening .flurry__glow {
+  animation: flurry-pulse 1.6s ease-in-out infinite;
+}
+.flurry--sleep .flurry__eye {
+  animation: none;
+  transform: scaleY(0.12) translateY(3px);
+}
+.flurry--sleep .flurry__eyes,
+.flurry--sleep .flurry__arm-right {
+  animation: none;
+}
+.flurry--sleep .flurry__gaze {
+  transform: none;
+}
+.flurry--sleep .flurry__float {
+  animation: flurry-float-soft 7s ease-in-out infinite;
+}
+.flurry--sleep .flurry__zzz path {
+  animation: flurry-zzz 3.2s ease-in-out infinite;
+}
+.flurry--sleep .flurry__zzz path:nth-child(2) {
+  animation-delay: 1.6s;
+}
+.flurry--wave .flurry__arm-right {
+  animation: flurry-wave-now 1.3s ease-in-out both;
+}
+.flurry--wave .flurry__float {
+  animation: flurry-hop 900ms ease-out both;
+}
+/* In flight: arms out, a little lean (the bank itself comes from --tilt on the figure's holder). */
+.flurry-flying .flurry__arm-left {
+  transform: rotate(28deg);
+}
+.flurry-flying .flurry__arm-right {
+  animation: none;
+  transform: rotate(18deg);
+}
+.flurry--still,
+.flurry--still * {
+  animation: none !important;
+  transition: none !important;
+}
+.flurry--still .flurry__gaze {
+  transform: none;
+}
+.flurry--still.flurry--sleep .flurry__zzz path,
+.flurry--still.flurry--thinking .flurry__flakes path {
+  opacity: 0.8;
+}
+.flurry--still.flurry--thinking .flurry__flakes path:nth-child(2) {
+  transform: rotate(180deg);
+}
+@keyframes flurry-zzz {
+  0% {
+    opacity: 0;
+    transform: translate(-3px, 4px) scale(0.7);
+  }
+  30%,
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(3px, -6px) scale(1);
+  }
+}
+@keyframes flurry-wave-now {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(-14deg);
+  }
+  40% {
+    transform: rotate(6deg);
+  }
+  60% {
+    transform: rotate(-12deg);
+  }
+  80% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes flurry-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes flurry-float-soft {
+  0%,
+  100% {
+    transform: translateY(1px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+}
+@keyframes flurry-blink {
+  0%,
+  91%,
+  100% {
+    transform: scaleY(1);
+  }
+  93.5% {
+    transform: scaleY(0.08);
+  }
+  96% {
+    transform: scaleY(1);
+  }
+}
+@keyframes flurry-look {
+  0%,
+  16%,
+  44%,
+  60%,
+  86%,
+  100% {
+    transform: translate(0, 0);
+  }
+  22%,
+  38% {
+    transform: translate(-2.2px, 0.6px);
+  }
+  66%,
+  80% {
+    transform: translate(2.4px, -0.6px);
+  }
+}
+@keyframes flurry-wave {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0);
+  }
+  76% {
+    transform: rotate(-8deg);
+  }
+  82% {
+    transform: rotate(3deg);
+  }
+  88% {
+    transform: rotate(-4deg);
+  }
+  94% {
+    transform: rotate(0);
+  }
+}
+@keyframes flurry-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* A small hop when something worked. */
+@keyframes flurry-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes flurry-land {
+  0% {
+    transform: scale(1.07, 0.9);
+  }
+  45% {
+    transform: scale(0.97, 1.04);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+@keyframes flurry-sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+@keyframes flurry-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .skeleton {
+    background-image: none;
+  }
+}
+
+/*
+ * Print stylesheet. Paper gets the light palette in near-black ink, no navigation, buttons or
+ * floating controls, no sticky positioning, links followed by their address, and page breaks that
+ * keep headings with their text and rows, cards and charts in one piece. Collapsed questions are
+ * opened before printing (lib/print.ts), and a small header says what was printed and when.
+ */
+@media print {
+  @page {
+    margin: 16mm 14mm 18mm;
+  }
+  :root,
+  .dark {
+    --canvas: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #ffffff;
+    --surface-3: #eef0f3;
+    --line: #cfd4db;
+    --line-strong: #8e96a1;
+    --ink: #000000;
+    --ink-2: #1c1f24;
+    --muted: #3b4149;
+    --subtle: #454b54;
+    --brand: #1d3f8f;
+    --brand-soft: #eef2fb;
+    --brand-ink: #1d3f8f;
+    --accent: #1d3f8f;
+    --accent-display: #1d3f8f;
+    --success: #1b5e3f;
+    --success-soft: #eef7f1;
+    --warning: #6e4706;
+    --warning-soft: #fbf4e6;
+    --danger: #8f2a1d;
+    --danger-soft: #fbeeec;
+    --info: #24497a;
+    --info-soft: #eef2f8;
+    --plate-top: #ffffff;
+    --plate-bottom: #ffffff;
+    color-scheme: light;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+  }
+  body {
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+  [data-print='hide'],
+  [data-sonner-toaster] {
+    display: none !important;
+  }
+  [data-print='only'] {
+    display: block !important;
+    margin-bottom: 8mm;
+  }
+  /* Sticky and fixed chrome would repeat or cover text on every page. */
+  .sticky,
+  .fixed {
+    position: static !important;
+  }
+  /* Scroll boxes print their whole content. */
+  .overflow-auto,
+  .overflow-x-auto,
+  .overflow-y-auto,
+  .overflow-hidden {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  main a[href^='http']:not([data-print-url='no'])::after,
+  main a[href^='mailto:']::after {
+    content: ' (' attr(href) ')';
+    font-size: 8.5pt;
+    color: #3b4149;
+    word-break: break-all;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  tr,
+  li,
+  img,
+  svg,
+  figure,
+  details,
+  [data-print='keep'] {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  thead {
+    display: table-header-group;
+  }
+  details.disclosure > summary .disclosure-icon {
+    display: none;
+  }
+  /* WebGL scenes don't print reliably; a note in their place says where the numbers are. */
+  canvas {
+    display: none !important;
+  }
+  [data-print='canvas-note'] {
+    display: block !important;
+  }
+}
+
+/* Recharts: inherit theme colours */
+.recharts-cartesian-axis-tick-value {
+  fill: var(--muted);
+  font-size: 12px;
+}
+.recharts-cartesian-grid line {
+  stroke: var(--line);
+}
+.recharts-default-tooltip {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 0;
+}
+.recharts-legend-item-text {
+  color: var(--ink-2) !important;
+}

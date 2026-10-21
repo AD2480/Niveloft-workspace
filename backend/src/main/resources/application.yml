@@ -1,0 +1,220 @@
+# Niveloft backend configuration (the code keeps its original package name, dev.projectflow).
+# Secrets and machine-specific values come from environment variables; the
+# defaults below are for local development only. See .env.example.
+
+server:
+  # Hosts such as Railway and Render tell the app which port to use through PORT.
+  port: ${SERVER_PORT:${PORT:8080}}
+  error:
+    include-message: never
+  # Finish requests in flight before stopping (deploys, restarts).
+  shutdown: graceful
+  max-http-request-header-size: 16KB
+  tomcat:
+    # A client that stops sending mid-request is dropped after this.
+    connection-timeout: 20s
+    max-http-form-post-size: 1MB
+    # Oversized uploads are refused without reading them to the end.
+    max-swallow-size: 60MB
+    threads:
+      max: ${SERVER_THREADS:200}
+
+spring:
+  application:
+    name: projectflow
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/projectflow?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8}
+    username: ${DB_USERNAME:projectflow}
+    password: ${DB_PASSWORD:projectflow}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+      # Waiting longer than this for a free connection fails fast with "server busy" (503).
+      connection-timeout: 10000
+      validation-timeout: 3000
+  # No database transaction may run longer than this.
+  transaction:
+    default-timeout: 30s
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none              # Flyway owns the schema (see db/migration)
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100   # loads lazy collections (criteria, checklists) in batches
+        jdbc:
+          time_zone: UTC
+          batch_size: 50
+        order_inserts: true
+      # Any single query that runs longer than this (ms) is stopped.
+      jakarta.persistence.query.timeout: 15000
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 55MB
+  jackson:
+    default-property-inclusion: always
+    serialization:
+      write-dates-as-timestamps: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      # /actuator/health/liveness (the app is running) and /readiness (it can serve: database up).
+      probes:
+        enabled: true
+      show-details: never
+
+logging:
+  pattern:
+    # Every log line carries the request id (also sent as X-Request-Id and in error bodies).
+    level: "%5p [%X{requestId:-}]"
+  level:
+    projectflow.requests: INFO
+    projectflow.browser: WARN
+
+springdoc:
+  # The interactive API documentation. Off in production (the production guard insists): set
+  # API_DOCS_ENABLED=false there.
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: ${API_DOCS_ENABLED:true}
+  api-docs:
+    path: /v3/api-docs
+    enabled: ${API_DOCS_ENABLED:true}
+
+projectflow:
+  # IANA time zone used to decide what "today" and "overdue" mean.
+  zone: ${PROJECTFLOW_ZONE:Asia/Kolkata}
+  jwt:
+    # Base64-encoded key of at least 32 bytes. REQUIRED outside local development:
+    #   openssl rand -base64 48
+    secret: ${JWT_SECRET:ZGV2LW9ubHktcHJvamVjdGZsb3ctc2VjcmV0LWNoYW5nZS1tZS1iZWZvcmUtZGVwbG95aW5nLTEyMzQ1Ng==}
+    expiration-seconds: ${JWT_EXPIRATION_SECONDS:86400}
+  cors:
+    # The Vite dev server proxies /api, so CORS is only needed if you call the API directly.
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5174,http://127.0.0.1:5174}
+  storage:
+    # Uploaded evidence files are stored here (outside the web root).
+    directory: ${STORAGE_DIR:./data/uploads}
+  site:
+    # The frontend's public address. Links in emails point here. Set it in production
+    # (e.g. https://projectflow.vercel.app, no trailing slash).
+    url: ${APP_URL:http://localhost:5174}
+    name: ${SITE_NAME:Niveloft}
+    # Shown at the bottom of emails (optional).
+    contact-email: ${CONTACT_EMAIL:}
+  email:
+    # none (nothing sent), log (written to this server's log, for local testing) or resend.
+    provider: ${EMAIL_PROVIDER:none}
+    # Resend API key (starts with re_). Server-side only.
+    api-key: ${EMAIL_API_KEY:}
+    # Must be an address on a domain you verified in Resend, e.g. "Niveloft <no-reply@yourdomain.com>".
+    # onboarding@resend.dev only delivers to your own Resend account's address (for testing).
+    from: ${EMAIL_FROM:Niveloft <onboarding@resend.dev>}
+    reply-to: ${EMAIL_REPLY_TO:}
+    api-url: ${EMAIL_API_URL:https://api.resend.com/emails}
+    # Email people each time their account is signed in to.
+    sign-in-alerts: ${EMAIL_SIGN_IN_ALERTS:true}
+  accounts:
+    # auto: new accounts must confirm their email when emails are really delivered (EMAIL_PROVIDER=resend).
+    require-email-verification: ${REQUIRE_EMAIL_VERIFICATION:auto}
+    registration-open: ${REGISTRATION_OPEN:true}
+  bot-protection:
+    # Per-address limits on sign-up, sign-in and emailed links. Only tests turn this off.
+    rate-limits: ${RATE_LIMITS:true}
+    # Cloudflare Turnstile secret key (optional). Set VITE_TURNSTILE_SITE_KEY on the frontend too.
+    turnstile-secret: ${TURNSTILE_SECRET_KEY:}
+    turnstile-verify-url: https://challenges.cloudflare.com/turnstile/v0/siteverify
+    # Proxies in front of this server that add to X-Forwarded-For (1 on Railway/Render; 0 without a proxy).
+    trusted-proxies: ${TRUSTED_PROXIES:1}
+  rate-limits:
+    # Where every rate limit is counted. database: shared by all API instances, so limits hold
+    # however many run. memory: this server only (one instance, or development). auto: the database
+    # in production, memory elsewhere.
+    store: ${RATE_LIMIT_STORE:auto}
+    # The counters' own connections (kept apart from the application's pool).
+    database-pool: ${RATE_LIMIT_DB_POOL:3}
+  https:
+    # Redirect plain HTTP to HTTPS (the host's proxy must send X-Forwarded-Proto). HSTS is always
+    # sent on HTTPS responses.
+    required: ${REQUIRE_HTTPS:false}
+  ops:
+    # API limits. 0 turns one off. Over a rate limit the answer is 429 with Retry-After.
+    limits:
+      requests-per-minute: ${API_REQUESTS_PER_MINUTE:300}       # per signed-in person
+      anonymous-requests-per-minute: ${API_ANONYMOUS_PER_MINUTE:120}  # per IP address, without sign-in
+      writes-per-minute: ${API_WRITES_PER_MINUTE:60}            # changes per person
+      uploads-per-hour: ${API_UPLOADS_PER_HOUR:60}              # file uploads per person
+      max-json-kb: ${API_MAX_JSON_KB:512}                       # largest JSON request body
+      max-tasks-per-project: ${MAX_TASKS_PER_PROJECT:5000}
+      max-projects-per-user: ${MAX_PROJECTS_PER_USER:100}
+      max-members-per-project: ${MAX_MEMBERS_PER_PROJECT:200}
+      storage-mb-per-project: ${STORAGE_MB_PER_PROJECT:1024}   # uploaded evidence per project
+    # Spending caps on paid services, for the whole server. 0 turns one off.
+    spending:
+      ai-requests-per-day: ${AI_MAX_REQUESTS_PER_DAY:1000}
+      ai-tokens-per-month: ${AI_MAX_TOKENS_PER_MONTH:5000000}
+      emails-per-day: ${EMAIL_MAX_PER_DAY:100}
+      emails-per-month: ${EMAIL_MAX_PER_MONTH:3000}
+  operators:
+    # Email addresses (comma-separated) of the people who run this site. Their accounts can open
+    # Site health: form success rates, sign-up sources, contact messages and spending. Nobody when empty.
+    emails: ${OPERATOR_EMAILS:}
+  ai:
+    # auto (default): use a free Ollama model on this computer if one is running, found automatically.
+    # ollama | openai (Groq, Gemini, OpenRouter, …) | anthropic | none. See README "AI providers".
+    provider: ${AI_PROVIDER:auto}
+    api-key: ${AI_API_KEY:}
+    model: ${AI_MODEL:}
+    base-url: ${AI_BASE_URL:}
+    max-requests-per-hour: ${AI_MAX_REQUESTS_PER_HOUR:30}
+  assistant:
+    # Flurry looks things up with tools (function calling) when the AI model supports them: auto | off.
+    tools: ${AI_TOOLS:auto}
+    max-lookups: ${AI_MAX_LOOKUPS:6}
+    voice:
+      # none (default): answers are read by the browser's own voice.
+      # elevenlabs: a natural voice; the answer's text is sent to ElevenLabs by this server.
+      provider: ${VOICE_PROVIDER:none}
+      api-key: ${ELEVENLABS_API_KEY:}
+      voice-id: ${ELEVENLABS_VOICE_ID:}
+      model: ${ELEVENLABS_MODEL:eleven_multilingual_v2}
+      max-characters-per-day: ${VOICE_MAX_CHARACTERS_PER_DAY:20000}
+  # Production launch controls (docs/launch/README.md).
+  launch:
+    # production (or staging): the server refuses to start with development settings, and
+    # lists what to fix. auto: production whenever the database isn't on this machine.
+    environment: ${APP_ENV:auto}
+    # required: in production the DB_URL must ask for TLS (sslMode=REQUIRED or VERIFY_IDENTITY).
+    # not-required: only for a database reachable on a private network alone.
+    database-tls: ${DATABASE_TLS:required}
+    sessions:
+      idle-hours: ${SESSION_IDLE_HOURS:12}         # a sign-in unused this long ends
+      max-hours: ${SESSION_MAX_HOURS:24}           # and never lasts longer than this
+      remember-days: ${SESSION_REMEMBER_DAYS:14}   # "keep me signed in"; 0 turns it off
+      previous-jwt-secret: ${JWT_PREVIOUS_SECRET:} # while rotating JWT_SECRET (see docs/launch/RUNBOOKS.md)
+      # The "keep me signed in" cookie's SameSite: auto (None, Secure and Partitioned over HTTPS, so
+      # an API on another site than the app gets it; Lax over plain HTTP), lax, strict or none.
+      cookie-same-site: ${SESSION_COOKIE_SAMESITE:auto}
+    uploads:
+      allowed-extensions: ${UPLOAD_ALLOWED_EXTENSIONS:}   # empty: the built-in list
+      scan: ${UPLOAD_SCAN:off}                            # off, or clamav
+      clamav-host: ${CLAMAV_HOST:127.0.0.1}
+      clamav-port: ${CLAMAV_PORT:3310}
+      scan-timeout-seconds: ${UPLOAD_SCAN_TIMEOUT_SECONDS:20}
+    passwords:
+      breach-check: ${PASSWORD_BREACH_CHECK:off}          # off, or hibp (k-anonymity range API)
+    audit:
+      retention-days: ${AUDIT_RETENTION_DAYS:365}         # at least 180
+    ai:
+      requests-per-project-per-day: ${AI_MAX_REQUESTS_PER_PROJECT_PER_DAY:300}
+      max-concurrent: ${AI_MAX_CONCURRENT:8}

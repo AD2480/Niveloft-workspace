@@ -1,0 +1,3512 @@
+{
+ "candidate": {
+  "date": "2026-10-21",
+  "commit": "the commit that adds evidence links, why the date moved, the blocker's ways forward, project documents, corrections, streamed answers and the forecast model trial (see git log docs/launch/register.json)",
+  "environment": "sandbox only: no staging or production environment was available, the backend's Spring tests could not run (Maven Central unreachable), and the npm registry was unreachable"
+ },
+ "statusMeaning": {
+  "PASS": "Verified at this commit by a check that ran in the sandbox, named in the evidence. It still needs an owner's name and a re-run on the intended release before sign-off.",
+  "FAIL": "The control is missing or known not to meet the check; the next step says how to fix it or what to switch off.",
+  "UNVERIFIED": "No adequate evidence yet: implemented but not run here, or it depends on the deployed environment, an account setting, a provider or a person.",
+  "N/A": "The capability or risk is absent from this release, with the reason; reopen if that changes."
+ },
+ "evidenceKey": {
+  "[guard]": "The production guard's rules (27 checks, plain Java against the real code): ran here; the same assertions are in backend test ProductionGuardRulesTest",
+  "[sec]": "Password rules with a stand-in breach API, and session rules (38 checks): ran here; also backend test PasswordAndSessionRulesTest",
+  "[upload]": "Upload allowlist, signatures and the ClamAV client against a stand-in clamd (23 checks): ran here; also backend test UploadRulesTest",
+  "[budget]": "Flurry's spending reservations, caps, concurrency and fail-closed behaviour (11 checks): ran here; also backend test AiBudgetTest",
+  "[limits]": "Shared rate limits (RateCountsChecks, 43 checks: the real migrations V1–V13 and DatabaseRateCounts on H2 in MySQL mode, with two instances on one database, 400 concurrent attempts, 352 random histories, the sliding weighting, waits, hashing, the sweep, failed requests given back, the fall-back to memory, and RateLimiter on top): ran here, recompiled against this release; the same assertions are in backend test SharedRateLimitsTest",
+  "[cookie]": "Keep me signed in (SessionCookieChecks, 28 checks: the real SessionStore cookie SQL on H2 after the migrations V1–V13, and the real SessionCookie building its headers with Spring's own ResponseCookie, compiled from Spring 6.2's source, and reading requests through the real servlet API): ran here, recompiled against this release; the end-to-end flow is backend test LaunchControlsTest.keptSignIns ([spring])",
+  "[email]": "The email budget's reserve (EmailBudgetChecks, 9 checks: the real EmailService, AccountEmails and UsageCounters, the counters on H2 after the migrations V1–V13, sending to a local stand-in for Resend's API): ran here, recompiled against this release; the same assertions are in backend test EmailBudgetTest",
+  "[tools]": "Flurry's tool loop, catalogue (8 tools, with search_documents), scope and record escaping, the links to the records each lookup read, and the voice's hourly limit shared by two servers (ToolChecks 38 and ProjectToolsChecks 51 checks): ran here",
+  "[spring]": "Spring Boot tests written for the behaviour, compiled here against the real libraries, NOT run here: run ./mvnw verify",
+  "[test-api]": "The in-browser test API's unit tests (frontend/src/mock, including launch.test.ts with kept sign-ins; the automated tests' stand-in for the API, which replaced demo mode) and the browser side of kept sign-ins (features/auth/keptSignIn.test.ts): ran here",
+  "[browser]": "Browser suites on the build with the tests' in-browser API, all passing with no page errors: this release's suite (24 checks, light and dark: why the date moved in steps; the blocker's ways forward compared with the same forecast, a comment previewed, edited, confirmed through the normal endpoint and counted as words only; ?ways=1; options compared on What if; a document saved as a draft, split into passages, approved and opened at a passage; a link opening a task at a review decision; the corrections card and the trial's status honest when empty; phones), every signed-in page on a phone as an owner, a manager, a member and a viewer (4 x 22 pages), launch controls (18), task-history export (7), Flurry's panel and voice (33), the AI in Chrome (14), the release suites (35, 68, 62, 9, 10, 24, 101), and hovering 376 controls on 23 pages (0 findings); plus the real-API build against a stand-in server (41: streamed lookups and words, Stop telling the server and closing the stream, the plain fallback for an older server, a correction under an answer, the corrections card and its download, the forecast trial with and without a model) and the cross-site kept sign-in (12): ran here",
+  "[cross-site]": "The real-API build (real HTTP, credentials) at http://localhost against an API on another site (http://127.0.0.1) serving the test API's handler with the backend's CORS rules and cookie attributes, in headless Chromium (12 checks): the cookie stored HttpOnly, Secure, SameSite=None and partitioned to the app's site, unreadable by the page, sent with renewals from the app and not from another site's page, removed on sign-out: ran here",
+  "[build]": "Frontend build checks (tools/seo.test.ts: a production build always uses the real API, needs VITE_API_BASE_URL, refuses http://, the tests' in-browser API and the retired demo, and leaves the stand-in and its sample password out; security.txt; the bundle key scan): ran here",
+  "[scan]": "scripts/secret-scan.mjs over the working tree and every commit before this one: ran here, nothing found",
+  "[migrations]": "scripts/check-migrations.mjs (order, additive rules, released checksums): ran here",
+  "[load]": "scripts/load-test.mjs smoke profile against a local stand-in API (proves the tooling only): ran here",
+  "[ml]": "The forecast kit's tests (ml/tests, 56, including the model file's export for all four kinds): ran here",
+  "[audit-a11y]": "Accessibility audit of the build with the tests' in-browser API in light and dark at 1440 and 390 px (contrast against WCAG 2.2 AA, mobile layout and targets, names), including the Documents page: 0 findings; 154 internal links, none broken: ran here. A task key inside a sentence counts as inline text (WCAG 2.5.8's exception)",
+  "[docs]": "Project documents, the blocker journey's counts and corrections to Flurry on H2 in MySQL mode after the real migrations (DocumentChecks, 34 checks: who sees and edits drafts, approval, passages, search ranking and escaping, another project finding nothing, deletion, purges): ran here; also backend tests DocumentServiceTest, JourneyServiceTest, AiFeedbackServiceTest",
+  "[stream]": "Streamed answers (StreamChecks, 51 checks: the answer's words picked out however the reply is split; the OpenAI-compatible, Anthropic and Ollama stream formats; the real JDK HTTP client against local stand-ins: words before the reply ends, a stop within a second that closes the connection, an idle provider timing out; the tool loop's events and stopping; the ranking of a big project's tasks): ran here; also backend tests StreamingClientsTest, AnswerStreamTest, ToolLoopTest, ContextRankingTest",
+  "[trial]": "The forecast model trial: the server's features and all four kinds of model against the ml kit's own numbers on the same file (ForecastChecks, 4,374 checks: 3,325 features and 700 predictions, largest difference 8.9e-16), and the trial on H2 after the real migrations (TrialChecks, 23 checks: recorded once, never rewritten, actuals, after the fact, the switch, refusals of a bad or synthetic model): ran here; also backend tests WorkDayParityTest and ForecastTrialServiceTest"
+ },
+ "gates": {
+  "G1": {
+   "name": "Security",
+   "areas": [
+    "AUTH",
+    "SESSION",
+    "ACCESS",
+    "API",
+    "BROWSER",
+    "SECRETS",
+    "FILES",
+    "VERIFY"
+   ]
+  },
+  "G2": {
+   "name": "Integrity",
+   "areas": [
+    "PRODUCT",
+    "DATA",
+    "LIVE",
+    "UX"
+   ]
+  },
+  "G3": {
+   "name": "AI boundaries",
+   "areas": [
+    "FLURRY",
+    "AI-DATA",
+    "FORECAST"
+   ]
+  },
+  "G4": {
+   "name": "Capacity",
+   "areas": [
+    "TRAFFIC",
+    "CACHE",
+    "CAPACITY",
+    "LOAD"
+   ]
+  },
+  "G5": {
+   "name": "Recovery",
+   "areas": [
+    "RECOVERY",
+    "RELEASE"
+   ]
+  },
+  "G6": {
+   "name": "Operation",
+   "areas": [
+    "OBSERVE",
+    "OPERATE"
+   ]
+  },
+  "G7": {
+   "name": "Commercial duties",
+   "areas": [
+    "PRIVACY",
+    "COST",
+    "BILLING",
+    "LEGAL"
+   ]
+  }
+ },
+ "checks": [
+  {
+   "id": "PRODUCT-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Routes, APIs, integrations and stores are listed in README, docs/FLURRY_AI.md, docs/COMPLIANCE_MAP.md and the inventory in docs/launch/README.md.",
+   "risk": "No named owner per feature yet.",
+   "next": "Name an owner for each line of the inventory and record them in register.json.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Demo data is gone from the product: the backend's demo seeding and its DEMO_DATA setting were removed (DemoDataSeeder deleted). A database seeded by an earlier version still holds the demo accounts, so a production server suspends any left (…@projectflow.dev, whose password was published) at start-up, signs them out and audits each (RetiredDemoAccounts, AccountService.retireDemoAccounts; [spring] RetiredDemoAccountsTest covers the operator's message). [build] every production build uses the real API and leaves the tests' stand-in and its password out (excludeTestApi, findSecrets).",
+   "risk": "The start-up suspension hasn't run against MySQL here.",
+   "next": "Start the release server against the release database and read its log; SELECT email FROM users WHERE email LIKE '%@projectflow.dev' AND deleted_at IS NULL AND suspended_at IS NULL returns nothing; record the result.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "A new account starts with no projects (nothing is seeded anywhere: demo data was removed); the empty states and Introduction page guide the first project.",
+   "risk": "",
+   "next": "Sign up on the release and screenshot the first-run screens.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-04",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Every build people use talks to the real API: demo mode was removed, and the in-browser stand-in exists only for the automated tests. [build] a production build refuses VITE_TEST_API and the retired VITE_USE_MOCK_API=true and replaces the stand-in's modules with an empty one (excludeTestApi). Forecasts are rule-based from records (InsightService); AI says when it is unavailable instead of inventing answers. The front page's sample workspace is an illustration labelled as a sample: fictional records on the page itself, no API, nothing saved.",
+   "risk": "",
+   "next": "Walk every page on the release with the real API and confirm no sample data appears inside the app.",
+   "tested": "sandbox 2026-10-15",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "All writes go to MySQL through the API; there is no browser-only mode any more (a production build can't include the tests' stand-in, [build]).",
+   "risk": "",
+   "next": "On the release: change a project, task and profile; refresh and sign in from a second device; record.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "CRUD, archive and restore exist for projects; create/read/update/delete for tasks, comments, milestones, dependencies; Spring workflow tests cover them (compiled here, not run).",
+   "risk": "Tasks have no archive or restore, only delete.",
+   "next": "Run ./mvnw verify; exercise each object on the release; decide whether task restore is needed.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Search, filters, sorting, pagination, assignees, due dates, dependencies and attachments exist; covered by Spring and test-API tests.",
+   "risk": "",
+   "next": "Exercise them on the release with a realistic project size (see LOAD-02).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Roles are defined (OWNER, MANAGER, MEMBER, VIEWER; lib/permissions.ts and Permissions.java). Plans: none (free).",
+   "risk": "Team size, regions and supported browsers aren't written down as commitments.",
+   "next": "Fill in docs/launch/README.md \"Supported\" (team size, region, browsers, mobile).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: ownership transfer (POST /projects/{id}/transfer-ownership), one owner always (the previous owner becomes manager), owner can't leave or be removed, role changes can't grant OWNER; invitations and removal; project deletion. [test-api] and [browser] ran; [spring] LaunchControlsTest.deleteAccount/invitations.",
+   "risk": "",
+   "next": "Run ./mvnw verify and repeat the journey on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Controls report success or failure with toasts and inline errors; browser suites check many of them ([browser]).",
+   "risk": "Not every control has an automated check.",
+   "next": "Manual pass on the release following VERIFY-01.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Pages describe what exists (FAQ says Niveloft is a capstone project); demo mode and its labels were removed with it, and the front page's interactive sample is labelled as a sample that saves nothing; no uptime or certification claims found.",
+   "risk": "",
+   "next": "Review public pages against what the release actually offers.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRODUCT-12",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No public demo is retained: demo mode, its sample accounts and the backend's demo seeding were removed, and a production build refuses the tests' in-browser API ([build]). The front page's sample workspace runs on the page itself with fictional records; it touches no API and saves nothing.",
+   "risk": "",
+   "next": "Reopen if a public demo is ever hosted: its own domain, API and data.",
+   "tested": "sandbox 2026-10-15",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Reviewed in-house implementation: Spring Security, BCrypt, HS256 tokens with issuer, audience and server-side sessions; [guard] checks the production configuration.",
+   "risk": "Not independently reviewed (see VERIFY-07).",
+   "next": "Run ./mvnw verify; include auth in the independent test.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Email confirmation (24 h, single-use, hashed) before sign-in when REQUIRE_EMAIL_VERIFICATION is on; addresses lower-cased; no account merging exists. New: accepting an invitation needs a confirmed address when email is on.",
+   "risk": "With EMAIL_PROVIDER=none there is no confirmation at all.",
+   "next": "Production: EMAIL_PROVIDER=resend and REQUIRE_EMAIL_VERIFICATION=true (as in .env.production.example).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "BCrypt (Spring's default cost 10), 72-byte limit enforced.",
+   "risk": "Argon2id is the checklist's example; BCrypt at cost 10 is acceptable but should be reviewed.",
+   "next": "Decide on the cost factor (12 recommended for current hardware) or Argon2id; record the decision.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: PasswordPolicy refuses common passwords and look-alikes, the email name and the person's name; long passphrases pass; optional Have I Been Pwned range check (k-anonymity). [sec] ran (38 checks incl. a stand-in breach API); the tests' in-browser API uses the same list ([test-api] parity test).",
+   "risk": "The bundled list is short (254 entries); HIBP is off by default.",
+   "next": "Set PASSWORD_BREACH_CHECK=hibp in production; run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Login failures limited per address and per address+account; sign-up, links and reset limited per address; Turnstile when configured; honeypot. New: counted in the database, shared by every instance ([limits]).",
+   "risk": "No MFA exists to throttle.",
+   "next": "Test credential stuffing (TRAFFIC-11); run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Login, resend and forgot-password answer the same either way; new: sign-up answers the same for an existing address when confirmation is required (the owner gets an email). [spring] AccountFlowTest.duplicateSignupIsGeneric.",
+   "risk": "Without email confirmation, sign-up necessarily says the address is taken.",
+   "next": "Keep REQUIRE_EMAIL_VERIFICATION=true in production; run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Organisational control: not in code.",
+   "risk": "",
+   "next": "Turn on MFA for GitHub, Vercel, the API host, the database provider, the domain registrar, Resend and AI providers; list them in RUNBOOKS.md \"Access\".",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "32 random bytes, stored as SHA-256, purpose-bound, 24 h / 1 h, single-use (atomic markUsed), older links retired on use. [spring] AccountFlowTest.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Password change needs the current password (wrong attempts now count like failed sign-ins); account deletion needs the password and the word DELETE. There is no email change and no MFA.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-10",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "Niveloft has no multi-factor sign-in and no recovery codes for its users; recovery is by an emailed single-use link only.",
+   "risk": "If MFA is added, this check applies.",
+   "next": "Reopen when MFA is introduced.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Emails for new sign-ins (confirmed addresses), password changed, someone trying to sign up with your address, and account deleted; none contain secrets except the reset/confirm link sent to the owner.",
+   "risk": "",
+   "next": "Send each email on the release and review its content.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AUTH-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[spring] AccountFlowTest (duplicate sign-up, expired and reused links, reset ending sessions) and LaunchControlsTest (suspended accounts refused with ACCOUNT_SUSPENDED).",
+   "risk": "",
+   "next": "Run ./mvnw verify; repeat on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-01",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "New: the one cookie is \"keep me signed in\" (__Secure-niveloft-session over HTTPS): HttpOnly, Secure, Path=/api/auth, Max-Age to its session's end; SameSite=None and Partitioned by default over HTTPS (the API usually sits on another site than the app), Lax over plain HTTP, or set with SESSION_COOKIE_SAMESITE. [cookie] the headers the real code builds; [cross-site] Chromium stored it so, kept it to the app's site and didn't send it from another site's page.",
+   "risk": "SameSite=None is needed while the API is on another site; Partitioned keeps the cookie to the app's site, and renewal checks the Origin (API-05). Safari may drop such a cookie; sign-ins there then last as long as the tab.",
+   "next": "Check the cookie in Chrome, Firefox and Safari on the release; serve the API from the app's own site with SESSION_COOKIE_SAMESITE=lax if Safari users must stay signed in.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-02",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "New: sign-in tokens live only in the tab (sessionStorage), a day at most, each checked against its server session on every request. \"Keep me signed in\" is an HttpOnly cookie that can only get a new token for its own session (POST /api/auth/refresh: the app's origin only, rate-limited); the database keeps only the SHA-256 of its 256-bit secret; tokens an earlier release left in localStorage are moved into the tab. The decision and the remaining XSS exposure are documented in docs/launch/README.md. [cookie], [cross-site], [test-api] (keptSignIn.test.ts, launch.test.ts), [browser] launch controls.",
+   "risk": "A script injected into the page could still use or read the open tab's token (a day at most, ended by signing out) and renew it while it runs; it can't read the cookie. The Content-Security-Policy allows scripts from this site only.",
+   "next": "Run ./mvnw verify (LaunchControlsTest.keptSignIns).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "HMAC signatures only (HS384 with a 48-byte key; jjwt refuses unsigned tokens and other algorithms), issuer and audience required, expiry checked, session id required; key rotation with JWT_PREVIOUS_SECRET. [spring] LaunchControlsTest.tokenClaims.",
+   "risk": "",
+   "next": "Run ./mvnw verify; practise a rotation on staging (RUNBOOKS.md).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: each sign-in is a server-side session; a password change ends every session and issues a new one; reset, suspension and deletion end them.",
+   "risk": "A role change inside a project doesn't rotate the session (roles are checked on every request instead).",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: POST /auth/logout, /auth/logout-everywhere, DELETE /auth/sessions/{id}; reset and change revoke; suspension and deletion revoke. New this release: signing out also ends the browser's kept sign-in and removes its cookie (the cookie alone signs out a browser whose token expired), and every kept sign-in ends with its session. [spring] LaunchControlsTest.sessions/keptSignIns/operatorControls/deleteAccount; [cookie], [test-api], [browser] launch controls (18) and [cross-site] ran.",
+   "risk": "",
+   "next": "Run ./mvnw verify; repeat on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Idle 12 h and absolute 24 h without \"keep me signed in\", 14 days with it (all configurable); unlimited concurrent sessions, each listed and individually revocable. [sec] session rules ran. New: a kept sign-in's token is renewed from its cookie when it expires, so kept sign-ins last their 14 days instead of a day ([cookie]: no idle end within 14 days, ended after).",
+   "risk": "",
+   "next": "Confirm the values with the owner; run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-07",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No OAuth or social sign-in exists.",
+   "risk": "Reopen if added.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-08",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No account linking: one account per email, no external identities.",
+   "risk": "Reopen if social sign-in is added.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: invitations expire after 14 days, are bound to the invited address (and a confirmed address when email is on) and project, and the sender's right to grant the role is rechecked at acceptance. [spring] LaunchControlsTest.invitations.",
+   "risk": "There are no share links.",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "An accepted invitation can't be used again (status check); removing or leaving revokes pending ones for that address; a demoted sender's invitations stop working. [spring] LaunchControlsTest.invitations.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "API requests get 401 with the reason; live-update streams are closed at the next heartbeat when their session ends (new); the app signs out on 401.",
+   "risk": "Queued offline actions don't exist.",
+   "next": "On the release: let a session idle out in one tab while another is open; record behaviour.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SESSION-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The reset token is removed from the address bar (replaceState); client error reports send only the path; EMAIL_PROVIDER=log (which logs links) is refused in production by [guard]; tokens are never logged by the request log.",
+   "risk": "Third-party analytics (if consented) see page paths only.",
+   "next": "Inspect logs and analytics on the release for tokens.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Permission matrix in code (Permissions.java, lib/permissions.ts) and docs/COMPLIANCE_MAP.md; owner, manager, member, viewer.",
+   "risk": "There is no \"guest\" role.",
+   "next": "Publish the matrix in docs/launch/README.md for sign-off.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Every project read and write calls ProjectAccess.require / requireTask; exports and audit need MANAGER; files check project membership; operator routes check OPERATOR_EMAILS.",
+   "risk": "",
+   "next": "Run ./mvnw verify; independent test (VERIFY-07).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Context comes from the verified token and the current membership row on every request.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[spring] SubmissionReviewWorkflowTest (outsiders get 403 on tasks and files) and LaunchControlsTest (removed members, non-members).",
+   "risk": "IDs are sequential numbers; protection relies on checks, not guessing.",
+   "next": "Run ./mvnw verify; try ID changes on the release with two workspaces.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Search, dashboard, notifications and analytics query only the caller's projects.",
+   "risk": "",
+   "next": "Test with two workspaces on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Single-schema application authorization (no row-level security).",
+   "risk": "The database user may have more rights than needed.",
+   "next": "Grant the app user only SELECT/INSERT/UPDATE/DELETE on its schema plus Flyway's DDL; record the grants.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-07",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No row-level security is used.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-08",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No per-tenant connection state: every query filters by project in SQL.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Live streams deliver ids only to current members; files are stored under random names and served after membership checks; no shared cache of private responses; no vector store.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "No delayed jobs act for users; scheduled jobs only purge expired rows. Invitation acceptance rechecks the sender (new).",
+   "risk": "",
+   "next": "Run ./mvnw verify (LaunchControlsTest.invitations covers the recheck).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Requests are explicit records (no mass assignment); role changes can't grant OWNER; ownership only via transfer by the owner.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Server checks don't depend on the interface; viewers are refused by the API.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-13",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Operators (OPERATOR_EMAILS) see Site health and use emergency switches; every operator action is in the audit log (new). There is no cross-customer data access path for operators.",
+   "risk": "Database access by staff is outside the app.",
+   "next": "List who has database access (RUNBOOKS.md \"Access\"); review quarterly.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "ACCESS-14",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No public share links exist; every object needs a member's sign-in.",
+   "risk": "Reopen if sharing is added.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Bean Validation on every request record (lengths, ranges, patterns, enums); the tests' in-browser API mirrors them.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Spring Data JPA and JdbcTemplate with parameters only; sort columns come from a fixed list.",
+   "risk": "",
+   "next": "Static review in VERIFY-05.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "React escapes all output; no raw HTML is rendered (no dangerouslySetInnerHTML found); AI answers are plain text with a small link/mention parser.",
+   "risk": "",
+   "next": "Include rendering in the independent test.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "No string-built SQL, templates or shell commands from user input.",
+   "risk": "",
+   "next": "Run a SAST tool in CI (VERIFY-06).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-05",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "New: the \"keep me signed in\" cookie authenticates one endpoint, POST /api/auth/refresh, which only issues a token for its own session and refuses, on the server whatever CORS says, a request whose Origin isn't the app's (or, without an Origin, one the browser didn't mark same-origin). Every change of state needs the bearer token. [cookie] the origin checks; [spring] LaunchControlsTest.keptSignIns (another site's Origin, or none: 403); [cross-site] another site's page got nothing, and the partitioned cookie wasn't sent from it.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "CORS lists exact origins (CORS_ALLOWED_ORIGINS); [guard] refuses *, localhost and http in production; every API call still needs a token.",
+   "risk": "",
+   "next": "Check the live header on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The server fetches only configured providers (AI, ElevenLabs, Resend, Turnstile, HIBP); Flurry never opens links. Ollama auto-detection probes only configured local addresses.",
+   "risk": "AI_BASE_URL is operator-set; a mistaken internal URL would be called.",
+   "next": "Review provider URLs at release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Jackson without default typing; files stored under random UUIDs (no user paths); redirects only to fixed in-app routes.",
+   "risk": "",
+   "next": "Independent test.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Typed request records; unsupported methods 405; JSON body limit (API_MAX_JSON_KB) and multipart limits.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Page sizes capped; search limited; task history export per project; audit pages capped at 200.",
+   "risk": "",
+   "next": "Load-test search and exports (LOAD-10).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Idempotency-Key on writes (IdempotencyFilter); version checks return EDIT_CONFLICT. [spring] OperationsTest; [load] race check against a stand-in.",
+   "risk": "",
+   "next": "Run ./mvnw verify and load-test --race against staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Errors carry a code and message only (server.error.include-message: never; GlobalExceptionHandler).",
+   "risk": "",
+   "next": "Probe error pages on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-13",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Actuator exposes health and info only; new: API docs off in production ([guard]); operator routes require OPERATOR_EMAILS.",
+   "risk": "",
+   "next": "List routes from the running app and compare (docs/launch/README.md).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "API-14",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "Niveloft receives no third-party callbacks or webhooks.",
+   "risk": "Reopen with billing or integrations.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "REQUIRE_HTTPS refuses plain HTTP behind the proxy ([guard] insists in production); Vercel serves HTTPS.",
+   "risk": "",
+   "next": "Check http:// requests on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "vercel.json sends HSTS with includeSubDomains.",
+   "risk": "includeSubDomains affects every subdomain of the site's domain.",
+   "next": "Confirm every subdomain serves HTTPS before keeping includeSubDomains; no preload until then.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "CSP in vercel.json: script-src self plus Turnstile and Google Tag Manager; style-src allows inline styles.",
+   "risk": "style-src 'unsafe-inline' remains.",
+   "next": "Test with Flurry, Turnstile and analytics on the release (BROWSER-11).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "frame-ancestors 'none' and X-Frame-Options DENY (vercel.json; Spring Security on the API).",
+   "risk": "",
+   "next": "Check headers on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "nosniff, strict-origin-when-cross-origin, Permissions-Policy (microphone self) in vercel.json; files also get a sandbox CSP (new).",
+   "risk": "",
+   "next": "Check headers on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "API responses are no-store (Spring Security default); files are private, max-age 300; exports no-store.",
+   "risk": "",
+   "next": "Check headers on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "External links open with noopener; no mixed content in the build.",
+   "risk": "",
+   "next": "Crawl the release for http:// resources.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Organisational.",
+   "risk": "",
+   "next": "Turn on MFA and registrar lock for the domain; list administrators.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Organisational.",
+   "risk": "",
+   "next": "Review DNS records and Vercel preview deployments; remove unused ones.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "APP_URL drives email links ([guard] requires https in production); no OAuth callbacks.",
+   "risk": "",
+   "next": "Check certificates, redirects and email links on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Browser suites run under the site's CSP (Flurry voice from a blob, earlier release).",
+   "risk": "Turnstile and analytics weren't tested here.",
+   "next": "Test sign-up with Turnstile and analytics consent on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BROWSER-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Analytics (Vercel or GA4) load only after consent.",
+   "risk": "",
+   "next": "Review what each analytics tool collects on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[scan] scripts/secret-scan.mjs found nothing in 562 files and all 38 commits; the frontend build refuses to publish a bundle containing keys ([build]).",
+   "risk": "The production bundle and server artifacts weren't built here.",
+   "next": "Run node scripts/secret-scan.mjs --history --dist frontend/dist in CI on the release build.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "AI, voice, email, Turnstile and database keys are server settings only; the browser never receives them.",
+   "risk": "",
+   "next": "Confirm they live in the host's secret store on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-03",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Only public values use the VITE_ prefix (.env.example); the build scans the bundle for keys and refuses to finish ([build] ran, including OpenAI, Groq, Google and ElevenLabs patterns added now).",
+   "risk": "",
+   "next": "Owner to confirm the Vercel variables on the release.",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "No exposed credential found ([scan]).",
+   "risk": "",
+   "next": "Rotate any key that was ever shared in chat, email or a ticket; record the rotation dates.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Separate example files: backend/.env.example (development) and .env.production.example; [guard] refuses development keys in production.",
+   "risk": "",
+   "next": "Create distinct keys per environment; never reuse production data in preview.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Organisational.",
+   "risk": "",
+   "next": "Scope provider keys (AI project keys, Resend sending-only key), database user grants and host access.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "JWT key rotation supported (JWT_PREVIOUS_SECRET); provider keys are server settings.",
+   "risk": "",
+   "next": "Practise a JWT and AI key rotation on staging (RUNBOOKS.md) and record it.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Organisational.",
+   "risk": "",
+   "next": "Review GitHub collaborators, deploy keys, Vercel and host members; remove unused access.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-09",
+   "status": "FAIL",
+   "owner": "",
+   "evidence": "Backend dependencies are pinned in pom.xml; ml/requirements.txt pins versions. The frontend has no package-lock.json in the repository (it couldn't be generated here: the npm registry was unreachable).",
+   "risk": "Frontend installs can pick up different versions.",
+   "next": "Run npm install once, commit frontend/package-lock.json; CI (npm ci) then enforces it.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: Dependabot for npm, Maven, pip and GitHub Actions; CI runs npm audit (high and critical) and the secret scan.",
+   "risk": "CI hasn't run yet; no SAST.",
+   "next": "Enable Dependabot and secret scanning in GitHub settings; add CodeQL if available.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "CI uses only read permission and no secrets, so pull requests can't reach production credentials.",
+   "risk": "",
+   "next": "Protect main (required reviews and CI); deploy only from main.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "SECRETS-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Third-party services and versions listed in THIRD_PARTY_NOTICES.md and docs/launch/README.md.",
+   "risk": "",
+   "next": "Add the deployed versions and account owners at release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "MySQL for records; uploads on disk at STORAGE_DIR, which [guard] requires to be an absolute path (a persistent volume) in production.",
+   "risk": "Uploads aren't in an object store; the volume must be backed up with the database.",
+   "next": "Mount a persistent volume; include it in backups (RECOVERY-02).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-02",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "A production build contains no browser data store ([build] excludeTestApi); the server keeps no customer data in memory; [guard] refuses an in-memory database in production.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-15",
+   "retest": ""
+  },
+  {
+   "id": "DATA-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Foreign keys, NOT NULL and unique constraints in the Flyway migrations.",
+   "risk": "",
+   "next": "Run ./mvnw verify (H2) and the migrations on MySQL 8.4 staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Membership, ownership, invitations and deletion run in single transactions.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Version columns give EDIT_CONFLICT instead of overwriting; Idempotency-Key for retries. [spring] SubmissionReviewWorkflowTest.editConflict and OperationsTest.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Instants stored in UTC (Hibernate UTC; new: the server's default zone is UTC); dates in PROJECTFLOW_ZONE.",
+   "risk": "",
+   "next": "Test due dates around midnight in two zones on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: deleting a task removes its evidence files (rows and bytes); deleting a project removes its files; deleting an account removes personal data and solo projects. [spring] LaunchControlsTest.uploads/deleteAccount.",
+   "risk": "Tasks and projects have no restore after deletion (archive exists for projects).",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: [guard] requires a TLS database URL (sslMode=REQUIRED or VERIFY_IDENTITY) in production unless DATABASE_TLS=not-required is declared.",
+   "risk": "",
+   "next": "Use a least-privilege user (ACCESS-06); check the live connection uses TLS.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Provider setting.",
+   "risk": "",
+   "next": "Confirm encryption at rest and backup access with the database and volume providers.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Indexes for the main access paths (V5 operations migration, V8 sessions and audit).",
+   "risk": "",
+   "next": "Examine slow queries under load (LOAD-08).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Hikari pool 10, 10 s connection timeout, 15 s query timeout, 30 s transaction timeout.",
+   "risk": "",
+   "next": "Align with the database's connection limit (CAPACITY-02).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "DATA-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[migrations] checks order, additive changes and that released migrations are unchanged (8 recorded in backend/migrations.sha256).",
+   "risk": "Not run on MySQL 8.4 here.",
+   "next": "Run Flyway against a copy of production on MySQL 8.4.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Uploads need a task the person can submit for; downloads check project membership.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: extension allowlist (UPLOAD_ALLOWED_EXTENSIONS), stored type from the extension (not the browser), signatures checked for images, PDF and Office/zip files. [upload] ran (23 checks); [spring] LaunchControlsTest.uploads.",
+   "risk": "Contents aren't parsed beyond the signature.",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "10 MB per file, uploads per person per hour, storage per project (STORAGE_MB_PER_PROJECT).",
+   "risk": "No archive expansion or parsing exists to limit.",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Stored under random UUIDs in one folder; names cleaned; nothing executes; written under a .pending name and renamed only after checks (new).",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: UPLOAD_SCAN=clamav scans each upload with clamd before it's stored; unreachable scanner refuses the upload. [upload] ran against a stand-in clamd.",
+   "risk": "Off by default; not tested against a real clamd.",
+   "next": "Run clamd next to the API, set UPLOAD_SCAN=clamav, upload the EICAR test file on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Files are private on the server's volume and served only through the API after a membership check; there are no signed URLs.",
+   "risk": "",
+   "next": "Confirm the volume isn't publicly served on the release host.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Only PNG, JPEG, GIF and WebP are shown inline; everything else downloads as octet-stream with nosniff; new: a sandbox CSP on file responses.",
+   "risk": "",
+   "next": "Check headers on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[upload] covers SVG (stored, never inline), HTML (refused), a page disguised as PNG (refused), truncated images; [spring] LaunchControlsTest.uploads.",
+   "risk": "Malformed documents and compressed bombs: never opened by the server.",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-09",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No previews or extracted text are generated; files are only downloaded.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-10",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "There is no import feature.",
+   "risk": "Reopen if imports are added.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The task-history CSV holds only keys, statuses, numbers and dates (no free text); the account export is JSON; exports limited (5 an hour for account copies) and switchable off (\"exports\").",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FILES-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: task deletion removes evidence rows and bytes; no thumbnails, extracted text or AI indexes exist.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Data map in docs/COMPLIANCE_MAP.md and the privacy policy (updated 21 October: project documents and their passages, corrections to Flurry, the Delivery page's step counts, forecast trial records).",
+   "risk": "",
+   "next": "Legal review (LEGAL-02).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Purposes stated in the privacy policy.",
+   "risk": "",
+   "next": "Legal review of legal bases.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Privacy policy names AI providers (when configured, with document passages among what's sent), ElevenLabs, Resend, hosting, and retention (corrections and step counts 180 days).",
+   "risk": "",
+   "next": "Fill in the operator, contact and regions; legal review.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Analytics only after consent, with a choice that can be changed (Cookie settings).",
+   "risk": "",
+   "next": "Legal review for target markets.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "No session replay; analytics optional.",
+   "risk": "",
+   "next": "Confirm settings in the analytics provider.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Audit records hold coarse networks (/24, /48) and no content; logs hold no passwords or tokens.",
+   "risk": "Server logs include full IP addresses (host default).",
+   "next": "Set the host's log retention; review support tools.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: self-service account export (JSON) and deletion (Settings → Data and privacy); profile correction; project task-history export for managers. [test-api] and [browser] ran; [spring] LaunchControlsTest.deleteAccount.",
+   "risk": "No full project (workspace) export for owners beyond the task history.",
+   "next": "Run ./mvnw verify; decide whether a full project export is needed for launch.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Deletion removes the person's data and sessions at once; a document's passages go with it; corrections and step counts are purged after 180 days; forecast trial rows go with their task or project. No embeddings or caches.",
+   "risk": "Backups still hold deleted data until they expire.",
+   "next": "See PRIVACY-09.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "RUNBOOKS.md: restoring a backup re-applies deletions from the audit log (account.deleted, project.deleted).",
+   "risk": "",
+   "next": "Practise in the restore drill (RECOVERY-07).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Provider choice is the operator's; Flurry sends only the asking member's project records.",
+   "risk": "",
+   "next": "Record each AI provider's retention, training and region settings.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "There is no support-access feature; operators see Site health and the audit log only.",
+   "risk": "",
+   "next": "Write the support-access rule (who, approval, expiry) in RUNBOOKS.md.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "PRIVACY-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: 18 or over, confirmed at sign-up; privacy policy and terms updated.",
+   "risk": "",
+   "next": "Legal review (India's DPDP rules treat under-18s as children).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-01",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "docs/FLURRY_AI.md: Flurry reads the asking member's project records (any role); it creates nothing; proposals are cards the person confirms; no exports or messages. [tools] ran.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-02",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Tools run in server code with the caller's project scope (ProjectTools.Scope), checked before the call; [tools] ran.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-03",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Fixed catalogue (resources/ai/tools.json); arguments validated; tasks outside the project refused. [tools] ran.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-04",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "No administrator, SQL, shell or network tool; a test keeps the catalogue read-only. [tools] ran.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-05",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Proposals (create or start a task) are cards; the person confirms, and the normal API with its own permission checks does the work.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-06",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Flurry can't delete, bulk-change, invite, export or send; there's nothing to confirm beyond the two proposal cards.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Written text is wrapped in <record> tags with <, > and & escaped ([tools] ran); the eval set in ml/eval_cases has injection cases.",
+   "risk": "Not tested against real models here.",
+   "next": "Run python -m niveloft_ml tools against the chosen model.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-08",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Flurry never opens links or files and the server makes no request on its behalf; answers render as text.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-09",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Model output is parsed as JSON and rendered as text (no HTML); unknown task keys dropped; proposals validated.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: every AI request writes an audit record (caller, project, feature, lookups and their results, rounds, tokens, outcome), never the prompt or answer. [spring] compiled.",
+   "risk": "",
+   "next": "Run ./mvnw verify; check records on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Fields clipped at 4,000 characters; max tokens per feature; at most 6 lookups and 5 rounds; provider timeouts; new: at most AI_MAX_CONCURRENT (8) questions at once per server. [budget] and [tools] ran.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Per person per hour, new: per project per day and atomic server caps (requests per day, tokens per month), and the operator's \"ai\" switch. [budget] ran (11 checks); [guard] refuses AI without caps in production. New: the per-person hourly limits (Flurry's and the voice's) are counted in the database too, shared by every instance, with failed provider calls given back ([limits], [tools]).",
+   "risk": "",
+   "next": "Run ./mvnw verify; practise the switch (RECOVERY-10).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-13",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Nothing is claimed as done by Flurry: proposals say \"suggested\"; created tasks appear only after the API returns.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FLURRY-14",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Stop ends a streamed answer and the server cancels the provider's stream (within 0.1 s against a local stand-in, the connection closed 0.2 s later); idle and total limits per provider stream ([stream] ran; the live build's suite stopped one). Provider failures, timeouts, caps and the switch give honest unavailable states; task and board pages don't depend on AI.",
+   "risk": "",
+   "next": "Turn the provider off on staging and use the board.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "docs/FLURRY_AI.md records the providers, tool format and settings; approved project documents are searched by words (BM25 over passages), with no embeddings or vector index.",
+   "risk": "",
+   "next": "Record the production model and provider at release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "ml/datasets.json records licences; the support-ticket dataset is CC-BY-NC-4.0 and is never used to save a model.",
+   "risk": "",
+   "next": "Confirm the chosen model's licence.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-03",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Public datasets are used only in the offline ml kit; customer data stays in the app and in exports the owner downloads.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-04",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Approved documents are split into passages (document_passages); each passage belongs to its document, and every search joins it to the document's project and approval, so no permission is copied into a passage to go stale ([docs] ran: another project's search finds nothing, drafts are never searched). No embeddings.",
+   "risk": "Reopen if a vector index is added.",
+   "next": "",
+   "tested": "sandbox 2026-10-21",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-05",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Each lookup runs within the asking member's project scope, document search included ([tools] ran: cross-project keys refused; [docs] ran: another project's documents not found).",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-21",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-06",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Lookups capped (15 tasks, 30 comments, 5 document passages, 30 evidence links); no response cache; a project of more than 250 tasks lists the ones the question needs first ([stream] ran).",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-21",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Members add documents as text (typed, pasted, or a .md/.txt file read in the browser; no connectors). Only owners and managers approve one for Flurry, and any change to an approved text needs approving again ([docs] ran). Passages reach the model inside <record> tags as data, like every record ([tools] ran).",
+   "risk": "A poisoned document an owner approved could still mislead a model; not tested against a real model here.",
+   "next": "Run the eval's document and injection cases on the chosen model before launch.",
+   "tested": "sandbox 2026-10-21",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-08",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "\"How I found this\" lists each lookup and its result, each linked to the task, comment, submission, review or document passage it read ([tools] ran; the live build's suite opened them); unknown task keys are dropped from answers.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-21",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-09",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Empty results are labelled \"not in the records\", unavailable lookups as unknown. A reply that only lists what the records don't show is shown as exactly that, never as an answer.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "ml/eval_cases: 26 Niveloft cases including role boundaries, injection and documents; a fixed 200-record xLAM sample (ids only); a project's corrections download as draft cases.",
+   "risk": "Not run against a real model here.",
+   "next": "Run the eval on the chosen model before launch.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "CHANGELOG records prompt and model changes; the eval compares models; project settings count right and wrong answers per model from people's corrections.",
+   "risk": "",
+   "next": "Record the eval results for the release model.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "AI-DATA-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Document passages are the only derived index: replaced when a document's text changes and deleted with it; changing an approved text or withdrawing approval takes it out of search at once ([docs] ran). Each question rechecks membership; no response cache.",
+   "risk": "",
+   "next": "Remove a member on staging and ask a question as them.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The in-app forecast is rule-based from task history (InsightService); docs describe its inputs.",
+   "risk": "",
+   "next": "Review the Prediction page copy against the code.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-02",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "The app uses deterministic rules; the ml kit recommends a learned model only when it beats them on later work ([ml] ran).",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The kit replays on a held-out later period against the current rule ([ml] ran on synthetic data).",
+   "risk": "",
+   "next": "Run on the team's exported history.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-04",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "Leakage-free features tested in the kit ([ml] ran).",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Earlier browser suites cover empty and new projects.",
+   "risk": "",
+   "next": "Check tiny teams and missing estimates on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Status history drives the forecast; reopened and blocked tasks handled by the rules.",
+   "risk": "",
+   "next": "Add explicit tests if the rules change.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Prediction screens show ranges and \"not enough history\" states.",
+   "risk": "",
+   "next": "Review on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "One analytics service feeds the charts.",
+   "risk": "",
+   "next": "Cross-check numbers between pages on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The kit measures error by horizon offline.",
+   "risk": "No production monitoring of forecast error.",
+   "next": "Schedule a monthly replay on exported history.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Dates are changed by people only; history is append-only.",
+   "risk": "",
+   "next": "Review with the owner whether forecast corrections are needed.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Forecasts and graphs read only the member's projects; the export anonymises people.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "FORECAST-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "No rankings of people; workload views show counts.",
+   "risk": "",
+   "next": "Review copy with the owner.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "One-time tickets (60 s) need a signed-in request; events go to current members and carry ids only.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: each stream belongs to a session and closes when it ends; removal publishes an event that drops the project; membership checked per event.",
+   "risk": "",
+   "next": "Run ./mvnw verify; test on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Version checks (EDIT_CONFLICT) instead of last write wins.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Idempotency-Key on creates; buttons disable while saving.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Clients refetch through the API on each event and on reconnect.",
+   "risk": "",
+   "next": "Disconnect a client on staging during changes and confirm it catches up.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Server-Sent Events from the Spring API (not from Vercel functions).",
+   "risk": "Proxies must allow long-lived responses.",
+   "next": "Confirm the host keeps SSE open; LIVE_MAX_STREAMS sized.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "No offline editing; failed saves keep the form contents.",
+   "risk": "",
+   "next": "Test a failed save offline on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Notifications only to members; emails carry no project content except invitations.",
+   "risk": "",
+   "next": "Review notification and email text on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Inbox filters, read states; sign-in alerts can be turned off by the operator.",
+   "risk": "No per-person mute or digest settings.",
+   "next": "Decide whether digest settings are needed.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Mentions resolved to current members; invitation addresses validated.",
+   "risk": "",
+   "next": "Run ./mvnw verify (mention and invitation tests).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Resend with a verified domain (operator setting).",
+   "risk": "",
+   "next": "Configure SPF, DKIM and DMARC; test bounces and complaints.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LIVE-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Clients reconnect after a deploy; tokens checked per request.",
+   "risk": "",
+   "next": "Redeploy staging with a board open; record.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "docs/launch/CAPACITY.md has the sizing worksheet (active users × requests a minute ÷ 60) and the gates.",
+   "risk": "No numbers chosen yet.",
+   "next": "Fill in expected active users, peak periods and regions.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Vercel's platform DDoS protection applies to the frontend; Turnstile on sign-up when configured.",
+   "risk": "No WAF in front of the API host.",
+   "next": "Choose the API host's firewall or a CDN in front of it; test false positives.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Separate limits: login failures, sign-up, emailed links, reset, invitations (switch), uploads per hour, writes per minute, AI per person/project/server, exports per hour, live streams.",
+   "risk": "",
+   "next": "Run ./mvnw verify (LimitsTest, LaunchControlsTest).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Per-person and per-IP API limits; per-project AI; server-wide AI and email caps. New: the configured ceilings and what happens beyond each are tabled in docs/launch/CAPACITY.md (What limits traffic first).",
+   "risk": "",
+   "next": "Run ./mvnw verify (LimitsTest).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-05",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "New: every rate limit is counted in the database in production (RATE_LIMIT_STORE=auto): a sliding-window counter per key, counted with one atomic conditional UPDATE (or an INSERT, retried on a duplicate key) on a separate 3-connection pool outside the request's transaction, with keys stored as SHA-256 prefixes, never addresses. AI and email spending were already atomic ([budget]). [limits] two instances on one database held every limit, and 400 concurrent attempts at a limit of 50 took exactly 50; [guard] warns when production counts in memory.",
+   "risk": "Within one window the counter is an estimate: no fixed window exceeds the limit, but up to twice the limit can fall within one window's length when the previous window's hits came at its very end. While the database is unreachable, each instance counts in memory (logged). Regions with separate databases don't share counts.",
+   "next": "Run ./mvnw verify (SharedRateLimitsTest); load-test two instances on staging (LOAD-05).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "X-Forwarded-For counted from the right using TRUSTED_PROXIES ([spring] ClientInfoTest).",
+   "risk": "",
+   "next": "Set TRUSTED_PROXIES to the host's proxy count; check the recorded addresses on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Body limits, 10 MB files, Tomcat threads, Hikari pool, AI concurrency (new), live streams per person and per server (new).",
+   "risk": "No job queue exists.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "429 with Retry-After; the client retries at most twice with growing waits, writes only with an Idempotency-Key (lib/requestPolicy).",
+   "risk": "",
+   "next": "Check 429 handling in the browser on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Per-project caps on tasks, members, storage and AI requests a day (new).",
+   "risk": "Database connections are shared without per-project limits.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The API is a separate host; Vercel only serves files.",
+   "risk": "The API host's own address bypasses any edge firewall.",
+   "next": "Restrict the API host to the edge, or put the edge in front of it.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Controls exist (limits, Turnstile, honeypot, generic answers, switches).",
+   "risk": "Not tested under attack-like load.",
+   "next": "Run sign-up spam and credential-stuffing drills on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Live streams capped per person (8) and per server (LIVE_MAX_STREAMS); tickets capped (5 per person).",
+   "risk": "No background jobs exist.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-13",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Limiters are in-process (they can't be \"down\"); AI and email counters fail closed (new: AI refused if spending can't be read).",
+   "risk": "",
+   "next": "Run ./mvnw verify (LaunchControlsTest); BudgetChecks ran.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "TRAFFIC-14",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "RUNBOOKS.md: emergency switches, sign everyone out, suspend an account, Turnstile, resume.",
+   "risk": "",
+   "next": "Practise once on staging and record.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Vite fingerprints assets; Vercel caches them.",
+   "risk": "",
+   "next": "Check cache headers for /assets on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "App pages are static shells; private data comes from the API with no-store.",
+   "risk": "",
+   "next": "Check headers on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-03",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No server-side response cache of private data exists.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Membership cache of 2 s for live events only, bypassed on membership changes; switches cached 5 s.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Vercel rewrites only app routes to static HTML.",
+   "risk": "",
+   "next": "Test cache deception on the release (e.g. /dashboard.css).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Headers are in vercel.json for every deployment of the project.",
+   "risk": "",
+   "next": "Check custom and preview domains.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Paged lists; debounced search; live events instead of polling.",
+   "risk": "",
+   "next": "Check request counts on a busy board on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Images compressed; 3D views lazy-loaded.",
+   "risk": "",
+   "next": "Record transfer sizes on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Earlier release measured the front page under throttling.",
+   "risk": "",
+   "next": "Record cold-cache sizes and times on a mid-range phone network.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Pages work without the 3D views; 3D loads only when shown.",
+   "risk": "No explicit no-WebGL path was tested here.",
+   "next": "Test with WebGL disabled.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Hashed assets; old HTML keeps loading its own assets while they exist.",
+   "risk": "",
+   "next": "Deploy twice on staging with a tab open.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CACHE-12",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "There is no service worker.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "docs/launch/CAPACITY.md lists the limits to record.",
+   "risk": "",
+   "next": "Fill in the plan limits of the database, host, email, AI and Vercel.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Pool of 10 and 200 Tomcat threads by default; new: the rate-limit counters have their own pool of 3 (RATE_LIMIT_DB_POOL).",
+   "risk": "",
+   "next": "Set (DB_POOL_SIZE + RATE_LIMIT_DB_POOL) × instances below the database's connection limit.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Host region is the operator's choice.",
+   "risk": "",
+   "next": "Choose regions near users; measure latency from India.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-04",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No slow imports, indexing or large exports; work happens within requests.",
+   "risk": "Reopen if exports grow (FILES-11).",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-05",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No queues or workers.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-06",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No background jobs with side effects (only purges).",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-07",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No workers act on behalf of users.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Timeouts on AI, voice, email, Turnstile, HIBP and clamd calls; no automatic retries on the server.",
+   "risk": "",
+   "next": "List each timeout in CAPACITY.md with the provider's limits.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Tools that a model refuses are remembered; AI failures are refunded; switches act as manual breakers.",
+   "risk": "No automatic circuit breakers.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Tasks, boards and reviews don't call AI; AI failures show an unavailable state.",
+   "risk": "",
+   "next": "Test with the AI provider off on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Exercise cold starts, a slow database and provider quota errors on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "CAPACITY-12",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "No work is deferred past the response except deleting stored bytes after commit (best effort, logged); counters live in the database.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Create a staging environment matching production with synthetic data.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Match schema, indexes, sizes and region; record them.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "scripts/load-test.mjs mixes board reads, analytics, dashboard, task reads and comment writes.",
+   "risk": "No uploads, search or AI in the mix.",
+   "next": "Add uploads and search; test AI separately with caps.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[load] the smoke profile ran against a local stand-in: every request answered, gates computed, race check passed. This proves the tooling only.",
+   "risk": "",
+   "next": "Run --profile smoke against staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Profiles: peak (15 min), reserve (3× for 30 min), spike (10×), soak (hours).",
+   "risk": "None run against the real API.",
+   "next": "Run all four on staging; keep the JSON results.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Raise users until a gate fails; record the break point.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Reads and writes p95 separately; p50/p99 per request; 429 counted apart from failures; timeouts recorded.",
+   "risk": "",
+   "next": "Run the profiles on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Watch database connections, slow queries and lock waits during the runs.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The race check verifies one comment for 20 identical requests.",
+   "risk": "",
+   "next": "Run --race on staging during load.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Add bot-like and expensive-request scenarios.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Check recovery after the spike profile.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Simulate AI, email, database and storage outages on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-13",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The script writes a JSON record (--out) with build, gates and numbers.",
+   "risk": "",
+   "next": "Store results with the release record (OPERATE-02).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LOAD-14",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "No supported user counts are published anywhere in the product.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "COST-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Set the monthly budget and price the tested mix (CAPACITY.md).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Site health shows AI and email spending against caps.",
+   "risk": "",
+   "next": "Collect provider invoices per service.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Calculate cost per active project and per AI question.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Configure Vercel and host spend alerts and the action taken.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Note enforcement delays and excluded charges for each provider.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Application caps: AI requests per day, per project per day, tokens per month, voice characters per day, emails per day and month; [guard] refuses AI without caps in production. [budget] ran. New: sign-in alerts and \"already registered\" notices stop at four fifths of the day's email budget and nine tenths of the month's, so confirmations, resets and security notices still go out ([email] ran).",
+   "risk": "",
+   "next": "Also set the provider-side limits (AI dashboard, Resend).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Tool loops stop at 6 lookups and 5 rounds; failures aren't retried by the server; the client retries at most twice. [tools] and [budget] ran.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: reservation before the provider call and settlement after, with an atomic capped update shared by all instances. [budget] ran (logic); [spring] LaunchControlsTest.atomicReservations (40 concurrent against a cap of 25).",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Sign-ups, invitations and exports are limited and switchable; Site health shows sign-ups.",
+   "risk": "",
+   "next": "Add alerts on unusual sign-up and email volumes.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The \"ai\", \"voice\", \"exports\", \"uploads\", \"signups\" and \"invitations\" switches each stop one feature.",
+   "risk": "",
+   "next": "Practise each switch on staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Write the customer message for a budget stop (RUNBOOKS.md template).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "COST-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Vercel Hobby is non-commercial only (noted in the checklist).",
+   "risk": "",
+   "next": "Use Vercel Pro (or another plan allowing commercial use) and a commercial API host plan.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-01",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "No checkout, prices, plans or paid claims anywhere in the app (searched the frontend); the FAQ says accounts are free.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-02",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No payments are taken.",
+   "risk": "Reopen before charging.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-03",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No prices or plans.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-04",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No payment webhooks.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-05",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No payment webhooks.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-06",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No entitlements.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-07",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No subscriptions.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-08",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No billing.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-09",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No paid features or seats.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-10",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No webhooks.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-11",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No subscriptions.",
+   "risk": "",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "BILLING-12",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No charges; the terms say the service is free.",
+   "risk": "Reopen before charging.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-01",
+   "status": "FAIL",
+   "owner": "",
+   "evidence": "Backend builds from pom.xml with the Maven wrapper.",
+   "risk": "No frontend lockfile (SECRETS-09), so the frontend build isn't reproducible.",
+   "next": "Commit frontend/package-lock.json; tag the release commit.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: .github/workflows/ci.yml runs backend tests, frontend type check, lint, tests and build, npm audit, the secret scan, the migration rules, the register check and the ml tests.",
+   "risk": "CI hasn't run yet.",
+   "next": "Push and make the workflow pass; require it on main.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Organisational.",
+   "risk": "",
+   "next": "Require reviews on main and limit who can promote to production.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Separate env files per environment; [guard] refuses development settings in production.",
+   "risk": "",
+   "next": "Give previews their own API and database.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "App pages are noindex; robots.txt lists only public pages.",
+   "risk": "",
+   "next": "Protect Vercel preview deployments.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "vercel.json rewrites app routes; the API URL is a build setting checked by [build].",
+   "risk": "",
+   "next": "Record the release's build settings.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Every app route rewrites to app.html; 404.html for others.",
+   "risk": "",
+   "next": "Visit nested routes directly on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-08",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "New: [guard] lists every missing or unsafe production setting and refuses to start (25 checks ran); [build] refuses a production build without VITE_API_BASE_URL, with an http:// API, with the tests' in-browser API or the retired demo setting.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "APP_URL and CORS checked by [guard]; no OAuth or webhooks.",
+   "risk": "",
+   "next": "Check email links on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Migrations additive ([migrations]); H2 tests run them.",
+   "risk": "Not run on MySQL with realistic data here.",
+   "next": "Run on a copy of production data on MySQL 8.4.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "V8 only adds tables and nullable columns, so the previous release runs against it.",
+   "risk": "",
+   "next": "Start the previous release against the migrated staging database.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "RUNBOOKS.md separates application rollback from data restoration.",
+   "risk": "",
+   "next": "Practise both on staging and time them.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-13",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "[guard] refuses the development key, public API docs and EMAIL_PROVIDER=log in production; demo seeding no longer exists, and a production server suspends accounts left from it at start-up ([spring], not run here); no debug routes or default credentials in production configuration.",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "RELEASE-14",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Confirm plans allow commercial use (COST-12) and have the needed security features.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": ".github/workflows/uptime.yml checks public pages and the API health endpoint.",
+   "risk": "No authenticated journey is monitored.",
+   "next": "Add a scheduled synthetic sign-in and board load with a monitoring account.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Browser errors reported to /api/client-errors; request log with timings; health probes.",
+   "risk": "No metrics backend, queue or dependency dashboards.",
+   "next": "Ship logs to a log service with alerts on 5xx rate and latency.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: the audit log records sign-ins, denials, role changes, ownership transfers, exports, suspensions and switches; failed sign-ins are rate-limited and logged.",
+   "risk": "No alerting on them.",
+   "next": "Alert on spikes of denied events and failed sign-ins.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: an audit record per AI request (feature, lookups, rounds, tokens, outcome); Site health shows AI spending.",
+   "risk": "No latency or error-rate dashboard for AI.",
+   "next": "Chart ai.* audit records weekly.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: audit_events with actor, project, action, target, outcome, time, coarse network and request id; projects' owners and managers see theirs; operators see all. [spring] LaunchControlsTest; [test-api] and [browser] ran.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Append-only from the application (no edit or delete path except the retention purge, at least 180 days).",
+   "risk": "Database administrators can still alter rows.",
+   "next": "Restrict database access; export audit records to write-once storage if required.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "No passwords, tokens or content in logs or audit details; client errors send paths only.",
+   "risk": "",
+   "next": "Review production logs after launch.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "X-Request-Id on every request and in logs (MDC); audit records keep it; UTC everywhere.",
+   "risk": "Not propagated to AI or email providers.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Log warnings at 80% of the AI token budget.",
+   "risk": "No alert routing configured.",
+   "next": "Configure alerts for outages, 5xx, budget and capacity.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Send a test alert to the named operator and record the acknowledgement.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The load test and Site health count 429s separately from failures.",
+   "risk": "",
+   "next": "Configure the log service to report 429 separately.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Audit retention configurable, at least 180 days (CERT-In asks for 180 days of logs kept in India).",
+   "risk": "Host log retention and location not set here.",
+   "next": "Set host log retention to at least 180 days; confirm storage location (LEGAL-03).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OBSERVE-13",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Publish a status page and an incident contact.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "RUNBOOKS.md proposes RPO 24 h and RTO 4 h for a pilot.",
+   "risk": "",
+   "next": "Owner to confirm the objectives.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "scripts/backup.sh dumps the database and archives STORAGE_DIR.",
+   "risk": "",
+   "next": "Schedule it (or provider backups) for the database, uploads and configuration.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Turn on point-in-time recovery (binary logs) at the database provider.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Keep backups in a separate account with its own credentials, encrypted.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "scripts/test-backup-restore.sh restores into a scratch database and compares counts.",
+   "risk": "Not run here (no MySQL).",
+   "next": "Run it against staging before accepting customer data; record time and result.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The test script compares row counts per table.",
+   "risk": "",
+   "next": "Also check files, ownership and a sample of permissions after restore.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "RUNBOOKS.md: re-apply account and project deletions recorded in the audit log after a restore.",
+   "risk": "",
+   "next": "Practise it in the drill.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "A single shared database: tenant-scoped restore means restoring to a scratch database and copying one project's rows.",
+   "next": "Write and practise the per-project copy procedure.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: RUNBOOKS.md incident section (roles, severity, contain, investigate, recover, communicate).",
+   "risk": "",
+   "next": "Name the people for each role.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New controls: rotate JWT_SECRET (with JWT_PREVIOUS_SECRET), sign everyone out, suspend an account, switch off exports, uploads, AI, sign-ups, invitations.",
+   "risk": "",
+   "next": "Practise each on staging and record.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Audit log retention at least 180 days.",
+   "risk": "",
+   "next": "Define evidence preservation (log export, access).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "RUNBOOKS.md lists CERT-In (6 hours) and DPDP Board and affected-person notifications.",
+   "risk": "",
+   "next": "Legal review; record contacts.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "RECOVERY-13",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Schedule quarterly restore drills, access reviews and incident exercises.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Browser suites run in Chromium.",
+   "risk": "Safari, Firefox, Edge, iOS and Android not tested here.",
+   "next": "Test the main journeys on each supported browser.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The accessibility audit checks mobile layouts ([audit-a11y]).",
+   "risk": "",
+   "next": "Check long names and zoom on real phones.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Loading, empty, error, permission and unavailable states across pages; new screens have them too.",
+   "risk": "",
+   "next": "Walk the states on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Failed saves keep the form; conflicts explain what happened.",
+   "risk": "",
+   "next": "Test a failed save on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Keyboard layer, visible focus, labels; [audit-a11y] checks names.",
+   "risk": "No screen-reader test here.",
+   "next": "Test with NVDA or VoiceOver.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[audit-a11y] checks contrast and target sizes; dialogs use Radix.",
+   "risk": "",
+   "next": "Manual WCAG 2.2 AA review.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Reduced motion respected (suites run with it).",
+   "risk": "",
+   "next": "Check with the OS setting on phones.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Earlier releases tested the 3D views for clipping and layout.",
+   "risk": "",
+   "next": "Check on phones.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "3D loads on demand; software rendering works.",
+   "risk": "",
+   "next": "Measure GPU and memory on a low-end phone.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Flurry can be collapsed, moved and dismissed (earlier browser suites).",
+   "risk": "",
+   "next": "Check on phones.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Every 3D or chart view has a list or table alternative; dragging has buttons.",
+   "risk": "",
+   "next": "Manual accessibility review.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Lab numbers (sandbox build, local server, Chromium, median of 3, 19 October): desktop LCP 0.85 s home / 0.47 s sign-in, CLS 0.001 / 0.002; emulated phone (4× CPU, slow 4G) LCP 5.0 s / 4.4 s and CLS 0.000 / 0.021 (the sign-in shift, 0.27 before, went with the demo's sample accounts). Details in docs/launch/CAPACITY.md.",
+   "risk": "On the emulated phone both pages miss LCP 2.5 s: the first paint waits for the JavaScript.",
+   "next": "Measure the Vite production build on the release; prerender the public pages if field LCP misses too; collect field data after launch.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-13",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Copy reviewed in each release.",
+   "risk": "",
+   "next": "Proofread transactional emails on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "UX-14",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "AI and animations are optional; pages work without them.",
+   "risk": "",
+   "next": "Turn AI off on staging and use the app.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "The privacy policy and terms name the operator from VITE_OPERATOR_NAME.",
+   "risk": "",
+   "next": "Name the operating entity, markets and a product contact.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Qualified review of the DPDP Act and Rules and their commencement dates.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Audit retention at least 180 days; UTC timestamps (synchronise the host clock with NTP).",
+   "risk": "",
+   "next": "Assess CERT-In duties: point of contact, 6-hour reporting, NTP, 180-day logs in India.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Assess GDPR or other markets if offered there.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Terms, privacy policy and cookie choice published; acceptable use is in the terms.",
+   "risk": "",
+   "next": "Legal review.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Processors listed in the privacy policy and docs/COMPLIANCE_MAP.md.",
+   "risk": "",
+   "next": "Sign data-processing terms with each.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Policy states ownership, AI processing, retention, deletion and export.",
+   "risk": "",
+   "next": "Legal review.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "THIRD_PARTY_NOTICES.md and ml/datasets.json list licences.",
+   "risk": "",
+   "next": "Review fonts, icons, images and 3D assets once more before launch.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-09",
+   "status": "PASS",
+   "owner": "",
+   "evidence": "No SOC 2, ISO, security or uptime claims in the product (searched the public pages).",
+   "risk": "",
+   "next": "",
+   "tested": "sandbox 2026-10-14",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Set support hours and response targets; no SLA unless decided.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-11",
+   "status": "N/A",
+   "owner": "",
+   "evidence": "No payments, invoices or refunds (BILLING).",
+   "risk": "Reopen before charging.",
+   "next": "",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "LEGAL-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "New: /.well-known/security.txt is published when VITE_SECURITY_CONTACT (or VITE_CONTACT_EMAIL) is set ([build] ran).",
+   "risk": "",
+   "next": "Set the contact; write the intake and fix workflow (RUNBOOKS.md).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Browser suites on the build with the tests' in-browser API cover sign-up, projects, invitations, Flurry and deletion ([browser]).",
+   "risk": "Not on the real API.",
+   "next": "Run the journey on staging with the real API.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[spring] tests use several workspaces and roles; [test-api] tests too.",
+   "risk": "",
+   "next": "Run ./mvnw verify; manual pass with two workspaces.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[spring] LaunchControlsTest covers ended sessions, suspended accounts, expired and stale invitations, removed members, deleted accounts.",
+   "risk": "",
+   "next": "Run ./mvnw verify.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Idempotency and conflicts tested; [browser] covers several tabs.",
+   "risk": "",
+   "next": "Manual test on slow networks and second devices.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "This release reviewed auth, sessions, uploads, migrations and AI tool execution in code.",
+   "risk": "Self-review only.",
+   "next": "Independent review (VERIFY-07).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[scan] and [migrations] ran; CI adds npm audit.",
+   "risk": "No SAST or DAST yet.",
+   "next": "Add CodeQL (or Semgrep) and a DAST scan of staging.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Commission a scoped penetration test before broad use.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Evidence is kept in this register and the CI logs.",
+   "risk": "",
+   "next": "Keep CI logs and drill records with the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "OWASP ASVS, API and LLM guidance informed the controls (docs/launch/README.md).",
+   "risk": "Not a formal assessment.",
+   "next": "Map ASVS level 2 requirements during the independent test.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Live events check membership; no cache of private data; restore drill pending.",
+   "risk": "",
+   "next": "Test after a restore drill (RECOVERY-05).",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "[build] scans the bundle for keys and the tests' sample password; source maps aren't published by default.",
+   "risk": "",
+   "next": "Inspect network responses on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Known items are listed here; no open critical finding is known.",
+   "risk": "No independent test yet.",
+   "next": "Resolve findings from VERIFY-07.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "VERIFY-13",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "This register records every remaining item with its next step.",
+   "risk": "",
+   "next": "Add owners and retest dates.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-01",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "docs/launch/README.md proposes a pilot on one API instance (live updates are per instance; limits and spending are shared).",
+   "risk": "",
+   "next": "Choose pilot size and expansion criteria.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-02",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "LAUNCH_READINESS.md names the release candidate commit; migrations recorded in backend/migrations.sha256.",
+   "risk": "",
+   "next": "Record configuration and evidence at release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-03",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "RUNBOOKS.md lists every emergency control.",
+   "risk": "",
+   "next": "Name the operator on call for the launch window.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-04",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Help and FAQ pages, the Introduction, and honest labels (no demo mode; the front page's sample is labelled as one).",
+   "risk": "",
+   "next": "Review help against the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-05",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Analytics only with consent; form success counts without content.",
+   "risk": "",
+   "next": "Review the analytics events collected after launch.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-06",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Sitemap and social previews for public pages only (tools/seo.ts, tested).",
+   "risk": "",
+   "next": "Check on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-07",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "App routes need sign-in through the API; robots.txt is not relied on.",
+   "risk": "",
+   "next": "Probe app routes signed out on the release.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-08",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Site health shows sign-ups, form failures and spending.",
+   "risk": "",
+   "next": "Review daily for the first two weeks.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-09",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "RUNBOOKS.md lists rollback triggers.",
+   "risk": "",
+   "next": "Agree them with the owner.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-10",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "",
+   "risk": "",
+   "next": "Calendar the periodic reviews.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-11",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "Contact form, account export and deletion, security.txt.",
+   "risk": "",
+   "next": "Publish the support channel.",
+   "tested": "",
+   "retest": ""
+  },
+  {
+   "id": "OPERATE-12",
+   "status": "UNVERIFIED",
+   "owner": "",
+   "evidence": "This register and CI are the re-verification path.",
+   "risk": "",
+   "next": "Re-run the affected checks for every material change.",
+   "tested": "",
+   "retest": ""
+  }
+ ]
+}

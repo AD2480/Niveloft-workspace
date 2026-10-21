@@ -1,0 +1,90 @@
+{
+  "title": "Predicting \u201cpriority\u201d from \u201csubject,body\u201d",
+  "licence": "Multilingual Customer Support Tickets. Licence: CC-BY-NC-4.0 (the creator\u2019s current Hugging Face release). Commercial use: no. Non-commercial: experiments only. Don\u2019t assume the current version permits training a model for a product that\u2019s sold. The tickets are synthetic, and the versions share thousands of tickets, so never pool them.",
+  "setup": "13,178 texts, 5 labels, 5-fold stratified cross-validation. Character n-grams work across languages without a tokenizer.",
+  "headers": [
+    "Method",
+    "Accuracy",
+    "Balanced accuracy",
+    "Macro F1"
+  ],
+  "rows": [
+    [
+      "most common label",
+      "28%",
+      "20%",
+      "0.09"
+    ],
+    [
+      "words (tf-idf) + logistic regression",
+      "92%",
+      "91%",
+      "0.91"
+    ],
+    [
+      "characters (tf-idf) + logistic regression",
+      "92%",
+      "92%",
+      "0.92"
+    ]
+  ],
+  "decision": "Best: characters (tf-idf) + logistic regression, balanced accuracy 92% against 20% for always guessing the most common label. The data\u2019s licence doesn\u2019t allow commercial use, so no model is saved: this measures what\u2019s possible, nothing more.",
+  "may_save": false,
+  "notes": [
+    "Source: dataset-tickets-german_normalized_50_5_2.csv (8,327,422 bytes, SHA-256 22580337aed864d8c0485f16a7fe683d48d8adfc3af0cd1a6fe1e240f728735f).",
+    "13,178 rows in the file; nothing removed; 13,178 measured.",
+    "By language (characters (tf-idf) + logistic regression): de 92% of 13,178."
+  ],
+  "facts": {
+    "source": {
+      "file": "dataset-tickets-german_normalized_50_5_2.csv",
+      "bytes": 8327422,
+      "sha256": "22580337aed864d8c0485f16a7fe683d48d8adfc3af0cd1a6fe1e240f728735f"
+    },
+    "rows_in_file": 13178,
+    "without_text_or_label": 0,
+    "duplicates_removed": 0,
+    "conflicting_rows_removed": 0,
+    "rows": 13178,
+    "measured": 13178,
+    "labels": {
+      "medium": 3719,
+      "high": 2946,
+      "low": 2816,
+      "critical": 1914,
+      "very_low": 1783
+    },
+    "text": "subject,body",
+    "label": "priority",
+    "best": "characters (tf-idf) + logistic regression",
+    "scores": {
+      "most common label": {
+        "accuracy": 0.2822127788738807,
+        "balanced_accuracy": 0.2,
+        "macro_f1": 0.08803929691661241
+      },
+      "words (tf-idf) + logistic regression": {
+        "accuracy": 0.9159963575656397,
+        "balanced_accuracy": 0.9128362251418116,
+        "macro_f1": 0.9114609123029676
+      },
+      "characters (tf-idf) + logistic regression": {
+        "accuracy": 0.9199423281226287,
+        "balanced_accuracy": 0.9163107498234808,
+        "macro_f1": 0.9152112455775498
+      }
+    },
+    "by": {
+      "language": {
+        "de": {
+          "rows": 13178,
+          "balanced_accuracy": 0.9163107498234808
+        }
+      }
+    },
+    "shared_with": {
+      "aa_dataset-tickets-multi-lang-5-2-50-version.csv": 0,
+      "dataset-tickets-multi-lang-4-20k.csv": 0
+    }
+  }
+}

@@ -1,0 +1,394 @@
+{
+  "run": "2026-10-20 11:07 UTC",
+  "versions": {
+    "python": "3.11.15",
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "sklearn": "1.8.0"
+  },
+  "sources": [
+    {
+      "file": "xlam_function_calling_60k.json",
+      "bytes": 96116570,
+      "sha256": "4ef5c6f0dc552f2231f93f5853a9ef431e9e806d7aa514d0f6b615606ce576c6",
+      "rows": 60000,
+      "used_for": "tool-calling sample"
+    },
+    {
+      "file": "02.desharnais.arff",
+      "bytes": 7772,
+      "sha256": "55d7786b24da2073e48c620df6aef5e206e7113f0e871629d1047c4be9c2b06e",
+      "rows": 81,
+      "used_for": "effort estimation"
+    },
+    {
+      "file": "aa_dataset-tickets-multi-lang-5-2-50-version.csv",
+      "bytes": 25996354,
+      "sha256": "f187c090e59581c2bbf3aa1377c8db4dd647464ecf2ae51bf8966e42e0ed6bc0",
+      "rows": 28587,
+      "used_for": "ticket priority"
+    },
+    {
+      "file": "dataset-tickets-multi-lang-4-20k.csv",
+      "bytes": 18799808,
+      "sha256": "9be3bf810584fe01e8e83383e83dfd33f4c3910938ecad03ef151da79d8f0635",
+      "rows": 20000,
+      "used_for": "ticket priority"
+    },
+    {
+      "file": "dataset-tickets-german_normalized_50_5_2.csv",
+      "bytes": 8327422,
+      "sha256": "22580337aed864d8c0485f16a7fe683d48d8adfc3af0cd1a6fe1e240f728735f",
+      "rows": 13178,
+      "used_for": "ticket priority"
+    }
+  ],
+  "results": {
+    "xlam": {
+      "records": 60000,
+      "usable": 58369,
+      "unusable": 1631,
+      "duplicate_ids": 0,
+      "issues": {
+        "bad_json": 0,
+        "no_query": 0,
+        "bad_tools": 0,
+        "duplicate_tool": 260,
+        "no_answers": 0,
+        "bad_answer": 0,
+        "unknown_function": 0,
+        "unknown_argument": 0,
+        "missing_required": 275,
+        "wrong_type": 1125
+      },
+      "examples": {
+        "duplicate_tool": [
+          81,
+          136,
+          152,
+          508,
+          782
+        ],
+        "missing_required": [
+          65,
+          218,
+          279,
+          301,
+          436
+        ],
+        "wrong_type": [
+          81,
+          130,
+          136,
+          152,
+          197
+        ]
+      },
+      "strata": {
+        "simple": 27719,
+        "multiple": 18326,
+        "parallel": 10895,
+        "parallel multiple": 1429
+      },
+      "sample": {
+        "simple": 95,
+        "multiple": 63,
+        "parallel": 37,
+        "parallel multiple": 5
+      }
+    },
+    "effort": {
+      "source": {
+        "file": "02.desharnais.arff",
+        "bytes": 7772,
+        "sha256": "55d7786b24da2073e48c620df6aef5e206e7113f0e871629d1047c4be9c2b06e"
+      },
+      "projects": 81,
+      "rows_in_file": 81,
+      "inputs": [
+        "TeamExp",
+        "ManagerExp",
+        "Transactions",
+        "Entities",
+        "PointsNonAdjust",
+        "Adjustment",
+        "PointsAjust",
+        "Language"
+      ],
+      "excluded": [
+        "Project",
+        "Length",
+        "YearEnd"
+      ],
+      "missing_values": {
+        "TeamExp": 2,
+        "ManagerExp": 3
+      },
+      "incomplete_projects": 4,
+      "best": "ridge",
+      "metrics": {
+        "median effort": {
+          "median_miss": 1715.0,
+          "mean_miss": 2910.703703703704,
+          "typical_miss": 1.9163381356366824,
+          "within_25": 0.2551440329218107,
+          "gain": -0.39555957581402845,
+          "gain_low": -0.5083972023081127,
+          "gain_high": -0.29044012907735317,
+          "ahead": 0.0
+        },
+        "function points": {
+          "median_miss": 1106.590410341839,
+          "mean_miss": 2137.3949613912437,
+          "typical_miss": 1.5937045006816266,
+          "within_25": 0.3333333333333333
+        },
+        "ridge": {
+          "median_miss": 1251.0119182444746,
+          "mean_miss": 1905.7034919383657,
+          "typical_miss": 1.4242652688098405,
+          "within_25": 0.37448559670781895,
+          "gain": 0.24118099856425024,
+          "gain_low": 0.16421661774809523,
+          "gain_high": 0.31407975943517585,
+          "ahead": 1.0
+        },
+        "forest": {
+          "median_miss": 1171.6715704383996,
+          "mean_miss": 2063.7946943052684,
+          "typical_miss": 1.5246543259204757,
+          "within_25": 0.35390946502057613,
+          "gain": 0.09503788322230589,
+          "gain_low": 0.04426023723568595,
+          "gain_high": 0.14439356269069767,
+          "ahead": 0.997
+        },
+        "gbm": {
+          "median_miss": 1076.5229825134656,
+          "mean_miss": 2002.2877324256485,
+          "typical_miss": 1.49384849865807,
+          "within_25": 0.3045267489711934,
+          "gain": 0.13883478934843196,
+          "gain_low": 0.06868295123069096,
+          "gain_high": 0.20462998130399956,
+          "ahead": 0.9985
+        }
+      },
+      "complete_cases": {
+        "projects": 77,
+        "best": "ridge",
+        "metrics": {
+          "median effort": {
+            "median_miss": 1673.0,
+            "mean_miss": 2785.318181818182,
+            "typical_miss": 1.9157098624267905,
+            "within_25": 0.2554112554112554,
+            "gain": -0.39101510468039136,
+            "gain_low": -0.5072067666229889,
+            "gain_high": -0.28420053250316474,
+            "ahead": 0.0
+          },
+          "function points": {
+            "median_miss": 1021.648475117046,
+            "mean_miss": 2075.100578850894,
+            "typical_miss": 1.5957567587595065,
+            "within_25": 0.341991341991342
+          },
+          "ridge": {
+            "median_miss": 1071.6384449566367,
+            "mean_miss": 1842.5322872952675,
+            "typical_miss": 1.4246950861350112,
+            "within_25": 0.4069264069264069,
+            "gain": 0.24262486386393645,
+            "gain_low": 0.16254802279020206,
+            "gain_high": 0.31058329006806834,
+            "ahead": 1.0
+          },
+          "forest": {
+            "median_miss": 1066.8515766796218,
+            "mean_miss": 1949.813721618171,
+            "typical_miss": 1.5061795991057374,
+            "within_25": 0.36796536796536794,
+            "gain": 0.12361600493139158,
+            "gain_low": 0.062096488509560996,
+            "gain_high": 0.17801730398222787,
+            "ahead": 1.0
+          },
+          "gbm": {
+            "median_miss": 1060.3735379675602,
+            "mean_miss": 2058.9858715905298,
+            "typical_miss": 1.5184904301537077,
+            "within_25": 0.329004329004329,
+            "gain": 0.10619788411522535,
+            "gain_low": 0.02070382585952089,
+            "gain_high": 0.18005954232922755,
+            "ahead": 0.9845
+          }
+        }
+      }
+    },
+    "tickets-multi-lang-5-2-50-version": {
+      "source": {
+        "file": "aa_dataset-tickets-multi-lang-5-2-50-version.csv",
+        "bytes": 25996354,
+        "sha256": "f187c090e59581c2bbf3aa1377c8db4dd647464ecf2ae51bf8966e42e0ed6bc0"
+      },
+      "rows_in_file": 28587,
+      "without_text_or_label": 0,
+      "duplicates_removed": 1,
+      "conflicting_rows_removed": 0,
+      "rows": 28586,
+      "measured": 28586,
+      "labels": {
+        "medium": 11515,
+        "high": 11177,
+        "low": 5894
+      },
+      "text": "subject,body",
+      "label": "priority",
+      "best": "words (tf-idf) + logistic regression",
+      "scores": {
+        "most common label": {
+          "accuracy": 0.4028195620233681,
+          "balanced_accuracy": 0.3333333333333333,
+          "macro_f1": 0.1914332975902513
+        },
+        "words (tf-idf) + logistic regression": {
+          "accuracy": 0.6023577975232631,
+          "balanced_accuracy": 0.599499499012162,
+          "macro_f1": 0.5931504977835955
+        },
+        "characters (tf-idf) + logistic regression": {
+          "accuracy": 0.5153921500034983,
+          "balanced_accuracy": 0.5203576703878271,
+          "macro_f1": 0.5077917142657012
+        }
+      },
+      "by": {
+        "language": {
+          "de": {
+            "rows": 12249,
+            "balanced_accuracy": 0.5334689070839532
+          },
+          "en": {
+            "rows": 16337,
+            "balanced_accuracy": 0.6488359369679001
+          }
+        }
+      },
+      "shared_with": {
+        "dataset-tickets-multi-lang-4-20k.csv": 8308,
+        "dataset-tickets-german_normalized_50_5_2.csv": 0
+      }
+    },
+    "tickets-multi-lang-4-20k": {
+      "source": {
+        "file": "dataset-tickets-multi-lang-4-20k.csv",
+        "bytes": 18799808,
+        "sha256": "9be3bf810584fe01e8e83383e83dfd33f4c3910938ecad03ef151da79d8f0635"
+      },
+      "rows_in_file": 20000,
+      "without_text_or_label": 0,
+      "duplicates_removed": 0,
+      "conflicting_rows_removed": 0,
+      "rows": 20000,
+      "measured": 20000,
+      "labels": {
+        "medium": 8144,
+        "high": 7801,
+        "low": 4055
+      },
+      "text": "subject,body",
+      "label": "priority",
+      "best": "words (tf-idf) + logistic regression",
+      "scores": {
+        "most common label": {
+          "accuracy": 0.4072,
+          "balanced_accuracy": 0.3333333333333333,
+          "macro_f1": 0.19291263975743791
+        },
+        "words (tf-idf) + logistic regression": {
+          "accuracy": 0.53495,
+          "balanced_accuracy": 0.5247712803541152,
+          "macro_f1": 0.5205462835401831
+        },
+        "characters (tf-idf) + logistic regression": {
+          "accuracy": 0.488,
+          "balanced_accuracy": 0.4870467041209743,
+          "macro_f1": 0.47742123611120296
+        }
+      },
+      "by": {
+        "language": {
+          "de": {
+            "rows": 8077,
+            "balanced_accuracy": 0.4743437328289031
+          },
+          "en": {
+            "rows": 11923,
+            "balanced_accuracy": 0.5580877741861873
+          }
+        }
+      },
+      "shared_with": {
+        "aa_dataset-tickets-multi-lang-5-2-50-version.csv": 8308,
+        "dataset-tickets-german_normalized_50_5_2.csv": 0
+      }
+    },
+    "tickets-german_normalized_50_5_2": {
+      "source": {
+        "file": "dataset-tickets-german_normalized_50_5_2.csv",
+        "bytes": 8327422,
+        "sha256": "22580337aed864d8c0485f16a7fe683d48d8adfc3af0cd1a6fe1e240f728735f"
+      },
+      "rows_in_file": 13178,
+      "without_text_or_label": 0,
+      "duplicates_removed": 0,
+      "conflicting_rows_removed": 0,
+      "rows": 13178,
+      "measured": 13178,
+      "labels": {
+        "medium": 3719,
+        "high": 2946,
+        "low": 2816,
+        "critical": 1914,
+        "very_low": 1783
+      },
+      "text": "subject,body",
+      "label": "priority",
+      "best": "characters (tf-idf) + logistic regression",
+      "scores": {
+        "most common label": {
+          "accuracy": 0.2822127788738807,
+          "balanced_accuracy": 0.2,
+          "macro_f1": 0.08803929691661241
+        },
+        "words (tf-idf) + logistic regression": {
+          "accuracy": 0.9159963575656397,
+          "balanced_accuracy": 0.9128362251418116,
+          "macro_f1": 0.9114609123029676
+        },
+        "characters (tf-idf) + logistic regression": {
+          "accuracy": 0.9199423281226287,
+          "balanced_accuracy": 0.9163107498234808,
+          "macro_f1": 0.9152112455775498
+        }
+      },
+      "by": {
+        "language": {
+          "de": {
+            "rows": 13178,
+            "balanced_accuracy": 0.9163107498234808
+          }
+        }
+      },
+      "shared_with": {
+        "aa_dataset-tickets-multi-lang-5-2-50-version.csv": 0,
+        "dataset-tickets-multi-lang-4-20k.csv": 0
+      }
+    }
+  },
+  "not_run": [
+    "Project Management Risk Raw: no file with \u201crisk\u201d in its name in this folder, so it wasn't run. Add it and rerun with `--risk-target <column>`."
+  ]
+}

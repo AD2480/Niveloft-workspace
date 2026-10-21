@@ -1,0 +1,193 @@
+{
+  "title": "Effort estimation on public data",
+  "licence": "Desharnais software effort (81 projects, from the PROMISE repository). Licence: Not checked here: read the source before use. Commercial use: unknown. Effort is in person-hours for whole projects, not tasks. Project, Length and YearEnd are never inputs: an identifier, and two things known only once a project is over. -1 means not recorded. PROMISE asks that work using it follow its acknowledgement guidelines.",
+  "setup": "81 projects, 5-fold cross-validation repeated 3 times (there are no dates to split on). Inputs: TeamExp, ManagerExp, Transactions, Entities, PointsNonAdjust, Adjustment, PointsAjust, Language. Models predict log effort; misses are in the target\u2019s units (Effort).",
+  "headers": [
+    "Method",
+    "Median miss",
+    "Mean miss",
+    "Typical miss",
+    "Within \u00b125%",
+    "Against function points"
+  ],
+  "rows": [
+    [
+      "median effort",
+      "1715.0",
+      "2910.7",
+      "\u00d71.92",
+      "26%",
+      "-40% (-51% to -29%), ahead in 0%"
+    ],
+    [
+      "function points",
+      "1106.6",
+      "2137.4",
+      "\u00d71.59",
+      "33%",
+      "(the baseline)"
+    ],
+    [
+      "ridge",
+      "1251.0",
+      "1905.7",
+      "\u00d71.42",
+      "37%",
+      "+24% (+16% to +31%), ahead in 100%"
+    ],
+    [
+      "forest",
+      "1171.7",
+      "2063.8",
+      "\u00d71.52",
+      "35%",
+      "+10% (+4% to +14%), ahead in 100%"
+    ],
+    [
+      "gbm",
+      "1076.5",
+      "2002.3",
+      "\u00d71.49",
+      "30%",
+      "+14% (+7% to +20%), ahead in 100%"
+    ]
+  ],
+  "decision": "Ridge beats function points: 24% of its typical miss removed, ahead in 100% of resamples. This is research on whole projects, not Niveloft\u2019s task forecast: use it to judge methods, not to replace the forecast.",
+  "may_save": true,
+  "notes": [
+    "Source: 02.desharnais.arff (7,772 bytes, SHA-256 55d7786b24da2073e48c620df6aef5e206e7113f0e871629d1047c4be9c2b06e).",
+    "Never used as inputs: Project (an identifier, not a property of the work); Length (the actual schedule in months, known only once the project is over); YearEnd (the year the project ended, known only at the end).",
+    "Missing values: 2 in TeamExp, 3 in ManagerExp (written as -1 in the file), across 4 projects; each is filled with the median of the training projects in its fold.",
+    "With only the 77 projects that have nothing missing: best ridge, typical miss \u00d71.42 against \u00d71.60 for function points (+24% of its miss, ahead in 100% of resamples)."
+  ],
+  "facts": {
+    "source": {
+      "file": "02.desharnais.arff",
+      "bytes": 7772,
+      "sha256": "55d7786b24da2073e48c620df6aef5e206e7113f0e871629d1047c4be9c2b06e"
+    },
+    "projects": 81,
+    "rows_in_file": 81,
+    "inputs": [
+      "TeamExp",
+      "ManagerExp",
+      "Transactions",
+      "Entities",
+      "PointsNonAdjust",
+      "Adjustment",
+      "PointsAjust",
+      "Language"
+    ],
+    "excluded": [
+      "Project",
+      "Length",
+      "YearEnd"
+    ],
+    "missing_values": {
+      "TeamExp": 2,
+      "ManagerExp": 3
+    },
+    "incomplete_projects": 4,
+    "best": "ridge",
+    "metrics": {
+      "median effort": {
+        "median_miss": 1715.0,
+        "mean_miss": 2910.703703703704,
+        "typical_miss": 1.9163381356366824,
+        "within_25": 0.2551440329218107,
+        "gain": -0.39555957581402845,
+        "gain_low": -0.5083972023081127,
+        "gain_high": -0.29044012907735317,
+        "ahead": 0.0
+      },
+      "function points": {
+        "median_miss": 1106.590410341839,
+        "mean_miss": 2137.3949613912437,
+        "typical_miss": 1.5937045006816266,
+        "within_25": 0.3333333333333333
+      },
+      "ridge": {
+        "median_miss": 1251.0119182444746,
+        "mean_miss": 1905.7034919383657,
+        "typical_miss": 1.4242652688098405,
+        "within_25": 0.37448559670781895,
+        "gain": 0.24118099856425024,
+        "gain_low": 0.16421661774809523,
+        "gain_high": 0.31407975943517585,
+        "ahead": 1.0
+      },
+      "forest": {
+        "median_miss": 1171.6715704383996,
+        "mean_miss": 2063.7946943052684,
+        "typical_miss": 1.5246543259204757,
+        "within_25": 0.35390946502057613,
+        "gain": 0.09503788322230589,
+        "gain_low": 0.04426023723568595,
+        "gain_high": 0.14439356269069767,
+        "ahead": 0.997
+      },
+      "gbm": {
+        "median_miss": 1076.5229825134656,
+        "mean_miss": 2002.2877324256485,
+        "typical_miss": 1.49384849865807,
+        "within_25": 0.3045267489711934,
+        "gain": 0.13883478934843196,
+        "gain_low": 0.06868295123069096,
+        "gain_high": 0.20462998130399956,
+        "ahead": 0.9985
+      }
+    },
+    "complete_cases": {
+      "projects": 77,
+      "best": "ridge",
+      "metrics": {
+        "median effort": {
+          "median_miss": 1673.0,
+          "mean_miss": 2785.318181818182,
+          "typical_miss": 1.9157098624267905,
+          "within_25": 0.2554112554112554,
+          "gain": -0.39101510468039136,
+          "gain_low": -0.5072067666229889,
+          "gain_high": -0.28420053250316474,
+          "ahead": 0.0
+        },
+        "function points": {
+          "median_miss": 1021.648475117046,
+          "mean_miss": 2075.100578850894,
+          "typical_miss": 1.5957567587595065,
+          "within_25": 0.341991341991342
+        },
+        "ridge": {
+          "median_miss": 1071.6384449566367,
+          "mean_miss": 1842.5322872952675,
+          "typical_miss": 1.4246950861350112,
+          "within_25": 0.4069264069264069,
+          "gain": 0.24262486386393645,
+          "gain_low": 0.16254802279020206,
+          "gain_high": 0.31058329006806834,
+          "ahead": 1.0
+        },
+        "forest": {
+          "median_miss": 1066.8515766796218,
+          "mean_miss": 1949.813721618171,
+          "typical_miss": 1.5061795991057374,
+          "within_25": 0.36796536796536794,
+          "gain": 0.12361600493139158,
+          "gain_low": 0.062096488509560996,
+          "gain_high": 0.17801730398222787,
+          "ahead": 1.0
+        },
+        "gbm": {
+          "median_miss": 1060.3735379675602,
+          "mean_miss": 2058.9858715905298,
+          "typical_miss": 1.5184904301537077,
+          "within_25": 0.329004329004329,
+          "gain": 0.10619788411522535,
+          "gain_low": 0.02070382585952089,
+          "gain_high": 0.18005954232922755,
+          "ahead": 0.9845
+        }
+      }
+    }
+  }
+}

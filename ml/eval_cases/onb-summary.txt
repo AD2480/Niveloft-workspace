@@ -1,0 +1,37 @@
+Project <record>Launch the mobile onboarding update</record>, key ONB, status ACTIVE. Start 2026-09-15, deadline 2026-10-30. Today is 2026-10-14.
+
+People and roles:
+- <record>Aarav Shah</record> (OWNER)
+- <record>Ines Duarte</record> (MANAGER)
+- <record>Maya Chen</record> (MEMBER)
+- <record>Rohan Mehta</record> (MEMBER)
+
+Milestones:
+- <record>Beta</record> due 2026-10-20, not completed
+
+Tasks (key | title | status | priority | assignee | due | estimate in working days | created | started | approved | submissions):
+- ONB-9 | <record>Passkey sign-in API</record> | IN_REVIEW | HIGH | <record>Maya Chen</record> | due 2026-10-11 (overdue) | 3 | 2026-09-28 | 2026-10-01 | - | 1
+- ONB-10 | <record>Connect passkey sign-in to the app</record> | TODO | HIGH | <record>Rohan Mehta</record> | due 2026-10-18 | 4 | 2026-09-28 | - | - | 0
+- ONB-11 | <record>Welcome email copy</record> | DONE | MEDIUM | <record>Aarav Shah</record> | due 2026-10-04 | 2 | 2026-09-20 | 2026-09-29 | 2026-10-03 | 1
+- ONB-12 | <record>Onboarding analytics events</record> | IN_PROGRESS | MEDIUM | <record>Ines Duarte</record> | due 2026-10-22 | 3 | 2026-10-02 | 2026-10-10 | - | 0
+- ONB-13 | <record>Accessibility review notes</record> | TODO | LOW | unassigned | no due date | no estimate | 2026-10-12 | - | - | 0
+
+Dependencies (a task waits on another):
+- ONB-10 waits on ONB-9
+
+Status changes, oldest first (when | task | from -> to | by):
+- 2026-09-20 10:02 | ONB-11 | created -> TODO | <record>Aarav Shah</record>
+- 2026-09-28 09:15 | ONB-9 | created -> TODO | <record>Ines Duarte</record>
+- 2026-09-28 09:20 | ONB-10 | created -> TODO | <record>Ines Duarte</record>
+- 2026-09-29 11:40 | ONB-11 | TODO -> IN_PROGRESS | <record>Aarav Shah</record>
+- 2026-10-01 08:55 | ONB-9 | TODO -> IN_PROGRESS | <record>Maya Chen</record>
+- 2026-10-02 16:30 | ONB-11 | IN_PROGRESS -> IN_REVIEW | <record>Aarav Shah</record>
+- 2026-10-02 17:05 | ONB-12 | created -> TODO | <record>Ines Duarte</record>
+- 2026-10-03 09:10 | ONB-11 | IN_REVIEW -> DONE | <record>Ines Duarte</record>
+- 2026-10-10 09:30 | ONB-12 | TODO -> IN_PROGRESS | <record>Ines Duarte</record>
+- 2026-10-12 14:00 | ONB-13 | created -> TODO | <record>Aarav Shah</record>
+- 2026-10-13 18:20 | ONB-9 | IN_PROGRESS -> IN_REVIEW | <record>Maya Chen</record>
+
+No scheduler estimate was provided.
+
+No forecast range was provided.

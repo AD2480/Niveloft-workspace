@@ -1,0 +1,192 @@
+{
+  "about": "The tools Flurry may call when answering a question about one project. Read tools only read that project's records, as the person asking may see them. Proposal tools never change anything: they become suggestions the person reviews and confirms in the app. The same file drives the backend (dev.projectflow.ai.ToolCatalog) and the tool-calling eval (ml/niveloft_ml/tooleval.py, run with python -m niveloft_ml tools).",
+  "tools": [
+    {
+      "name": "find_tasks",
+      "kind": "read",
+      "description": "Find tasks in this project by words in their title or description, and/or by status, owner or lateness. Returns up to 15 tasks: key, title, status, owner and due date.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to look for in titles and descriptions. Leave out to list by the filters only."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "TODO",
+              "IN_PROGRESS",
+              "IN_REVIEW",
+              "DONE"
+            ],
+            "description": "Only tasks in this state."
+          },
+          "assignee": {
+            "type": "string",
+            "description": "Only tasks owned by this person (their name), or 'unassigned'."
+          },
+          "overdue": {
+            "type": "boolean",
+            "description": "Only unfinished tasks past their due date."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_task",
+      "kind": "read",
+      "description": "Everything recorded about one task: its description, acceptance criteria, checklist, what it waits on and what waits on it, every submission and review decision, and its latest comments.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The task's key, for example ONB-9."
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_comments",
+      "kind": "read",
+      "description": "All comments on one task, oldest first (up to 30), with who wrote each and when.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The task's key, for example ONB-9."
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_mentions",
+      "kind": "read",
+      "description": "Where a task is mentioned in this project: other tasks' descriptions and comments that name its key, with the words around it.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The task's key, for example ONB-9."
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recent_activity",
+      "kind": "read",
+      "description": "What changed in this project recently, newest first: status changes, comments, submissions, reviews, assignments and changed dates, with who did it and when (up to 40 entries).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "How many days back to look (default 7)."
+          },
+          "key": {
+            "type": "string",
+            "description": "Only this task's activity (optional)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_documents",
+      "kind": "read",
+      "description": "Search this project's approved documents (specifications, meeting notes, decisions) for passages about a topic. Returns at most 5 passages, best match first, each with its document and section. Only documents an owner or manager approved are searched; drafts never are. Word search: use the words the document would use.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to look for, for example \"session timeout\" or \"refund policy\"."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "propose_create_task",
+      "kind": "proposal",
+      "description": "Suggest a new task. Nothing is created: the person sees the suggestion, can edit it, and decides whether to create it.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "A short title, 3 to 200 characters."
+          },
+          "description": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "URGENT"
+            ]
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "yyyy-MM-dd, only if the person gave a date."
+          },
+          "assigneeName": {
+            "type": "string",
+            "description": "Someone on this project, only if the person named them."
+          },
+          "estimateDays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "propose_start_task",
+      "kind": "proposal",
+      "description": "Suggest starting a task (moving it to In progress). Nothing changes: the person decides.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The task's key, for example ONB-10."
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+# Test profile: in-memory H2 in MySQL compatibility mode, same Flyway migrations.
+spring:
+  datasource:
+    url: jdbc:h2:mem:projectflow;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+projectflow:
+  zone: Asia/Kolkata
+  jwt:
+    secret: dGVzdC1vbmx5LXByb2plY3RmbG93LXNlY3JldC1rZXktZm9yLXVuaXQtdGVzdHMtMTIzNDU2Nzg5MA==
+    expiration-seconds: 3600
+  cors:
+    allowed-origins: http://localhost:5174
+  storage:
+    directory: ${java.io.tmpdir}/projectflow-test-uploads
+  ai:
+    provider: none
+    api-key: ""
+    model: ""
+    base-url: https://api.anthropic.com
+    max-requests-per-hour: 30
+  bot-protection:
+    rate-limits: false
+    trusted-proxies: 0
+  email:
+    provider: none

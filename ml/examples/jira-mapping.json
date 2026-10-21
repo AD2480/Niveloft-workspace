@@ -1,0 +1,19 @@
+{
+  "_about": "Which columns of a Jira issues export mean what. Edit to match your file: column names differ between exports. Unused fields can be null.",
+  "key": "key",
+  "project": "project",
+  "created": "created",
+  "started": null,
+  "resolved": "resolutiondate",
+  "status": "status",
+  "done_statuses": ["Closed", "Resolved", "Done"],
+  "resolution": "resolution",
+  "done_resolutions": ["Fixed", "Done", "Resolved", "Implemented", "Complete"],
+  "priority": "priority",
+  "priority_map": { "Blocker": "URGENT", "Critical": "URGENT", "Highest": "URGENT", "Major": "HIGH", "High": "HIGH", "Medium": "MEDIUM", "Minor": "MEDIUM", "Low": "LOW", "Trivial": "LOW", "Lowest": "LOW" },
+  "assignee": "assignee",
+  "estimate_seconds": "timeoriginalestimate",
+  "hours_per_day": 8,
+  "due": "duedate",
+  "description": "description"
+}

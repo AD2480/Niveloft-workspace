@@ -1,0 +1,1712 @@
+{
+ "title": "From demo to production. Niveloft launch checklist",
+ "prepared": "14 October 2026",
+ "source": "Niveloft_Production_Launch_Checklist.pdf (341 checks across 27 areas)",
+ "items": [
+  {
+   "id": "PRODUCT-01",
+   "area": "01 / Product scope and demo removal",
+   "text": "Record every launch feature, route, API, integration and data store; identify a responsible owner."
+  },
+  {
+   "id": "PRODUCT-02",
+   "area": "01 / Product scope and demo removal",
+   "text": "Remove sample accounts, test credentials, seeded client data and default administrator access from production."
+  },
+  {
+   "id": "PRODUCT-03",
+   "area": "01 / Product scope and demo removal",
+   "text": "Verify new accounts start with an honest empty workspace and useful onboarding."
+  },
+  {
+   "id": "PRODUCT-04",
+   "area": "01 / Product scope and demo removal",
+   "text": "Replace mock responses, hardcoded charts, simulated notifications and random forecasts with verified data."
+  },
+  {
+   "id": "PRODUCT-05",
+   "area": "01 / Product scope and demo removal",
+   "text": "Prove account, workspace, project, board and task changes persist after refresh and a second-device login."
+  },
+  {
+   "id": "PRODUCT-06",
+   "area": "01 / Product scope and demo removal",
+   "text": "Exercise create, read, update, archive, restore and delete flows for every supported object."
+  },
+  {
+   "id": "PRODUCT-07",
+   "area": "01 / Product scope and demo removal",
+   "text": "Check search, filters, sorting, pagination, assignees, due dates, task dependencies and attachments."
+  },
+  {
+   "id": "PRODUCT-08",
+   "area": "01 / Product scope and demo removal",
+   "text": "Define supported roles, plans, team size, regions, browsers and mobile capabilities."
+  },
+  {
+   "id": "PRODUCT-09",
+   "area": "01 / Product scope and demo removal",
+   "text": "Check ownership transfer, last-owner protection, invitations, member removal and workspace deletion."
+  },
+  {
+   "id": "PRODUCT-10",
+   "area": "01 / Product scope and demo removal",
+   "text": "Verify every visible control completes its action and gives accurate success or failure feedback."
+  },
+  {
+   "id": "PRODUCT-11",
+   "area": "01 / Product scope and demo removal",
+   "text": "Hide unfinished features and publish accurate capability descriptions; remove unsupported reliability claims."
+  },
+  {
+   "id": "PRODUCT-12",
+   "area": "01 / Product scope and demo removal",
+   "text": "Separate any retained public demo from customer accounts, credentials, APIs and production data."
+  },
+  {
+   "id": "AUTH-01",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Use a maintained identity provider or reviewed authentication implementation; test production configuration."
+  },
+  {
+   "id": "AUTH-02",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Verify email ownership before sensitive access; normalize addresses consistently without unsafe account merging."
+  },
+  {
+   "id": "AUTH-03",
+   "area": "02 / Identity, login and account recovery",
+   "text": "If storing passwords, use a modern password hashing implementation such as Argon2id with reviewed parameters."
+  },
+  {
+   "id": "AUTH-04",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Allow strong passphrases and password managers; block common or compromised passwords."
+  },
+  {
+   "id": "AUTH-05",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Throttle signup, login, verification, recovery and MFA attempts using account and network signals."
+  },
+  {
+   "id": "AUTH-06",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Use generic recovery and login responses where needed to prevent account enumeration."
+  },
+  {
+   "id": "AUTH-07",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Require MFA for production, platform administrator, repository, database and hosting accounts."
+  },
+  {
+   "id": "AUTH-08",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Make reset and verification tokens unpredictable, purpose-bound, short-lived and single-use."
+  },
+  {
+   "id": "AUTH-09",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Protect password, registered email, MFA and recovery changes with appropriate reauthentication."
+  },
+  {
+   "id": "AUTH-10",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Ensure MFA recovery cannot bypass identity verification; protect and revoke recovery codes."
+  },
+  {
+   "id": "AUTH-11",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Notify users of sensitive identity changes without including credentials or reset secrets."
+  },
+  {
+   "id": "AUTH-12",
+   "area": "02 / Identity, login and account recovery",
+   "text": "Test duplicate signup, disabled accounts, expired links, reused links and compromised-account recovery."
+  },
+  {
+   "id": "SESSION-01",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Use appropriate Secure, HttpOnly and SameSite settings for cookies that hold sessions."
+  },
+  {
+   "id": "SESSION-02",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Choose and document token storage and XSS exposure; do not put long-lived privileged tokens in browser storage."
+  },
+  {
+   "id": "SESSION-03",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Validate signed token algorithms, signatures, issuer, audience, lifetime and key rotation."
+  },
+  {
+   "id": "SESSION-04",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Rotate session identifiers at authentication or privilege changes and implement required token revocation."
+  },
+  {
+   "id": "SESSION-05",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Prove logout, password reset, account suspension and logout-all invalidate the relevant sessions."
+  },
+  {
+   "id": "SESSION-06",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Define idle and absolute session expiry and safe concurrent-session behavior."
+  },
+  {
+   "id": "SESSION-07",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Protect OAuth flows with state and PKCE as applicable; allowlist exact redirect destinations."
+  },
+  {
+   "id": "SESSION-08",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Prevent unsafe account linking and verify the identity claims used to merge accounts."
+  },
+  {
+   "id": "SESSION-09",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Expire and revoke invitation and sharing tokens; authorize the intended workspace, recipient and role."
+  },
+  {
+   "id": "SESSION-10",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Ensure old invitation links cannot re-add a removed member or grant stale elevated permissions."
+  },
+  {
+   "id": "SESSION-11",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Test session expiry in tabs, API requests, live collaboration and queued actions."
+  },
+  {
+   "id": "SESSION-12",
+   "area": "03 / Sessions, OAuth and invitation tokens",
+   "text": "Keep authentication and share tokens out of logs, analytics, referrers and client error reports."
+  },
+  {
+   "id": "ACCESS-01",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Define an explicit owner, administrator, member and guest permission matrix for every operation."
+  },
+  {
+   "id": "ACCESS-02",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Enforce authorization on the server for every read, write, export, download and administrative action."
+  },
+  {
+   "id": "ACCESS-03",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Derive authorized workspace context from verified identity and current membership."
+  },
+  {
+   "id": "ACCESS-04",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Try changing project, workspace, task, file and user IDs; deny cross-workspace and cross-role access."
+  },
+  {
+   "id": "ACCESS-05",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Test nested objects, bulk actions, search results, counts, notifications and analytics for data leakage."
+  },
+  {
+   "id": "ACCESS-06",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Apply appropriate database isolation or row-level policies and verify the actual deployed database role."
+  },
+  {
+   "id": "ACCESS-07",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "If using RLS, ensure ordinary request paths do not use privileged roles that bypass policies."
+  },
+  {
+   "id": "ACCESS-08",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Scope connection-pool tenant state to requests or transactions and test connection reuse between workspaces."
+  },
+  {
+   "id": "ACCESS-09",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Scope caches, storage paths, vector retrieval and real-time channels to the authorized workspace."
+  },
+  {
+   "id": "ACCESS-10",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Recheck sensitive permissions at delayed job execution and after member removal."
+  },
+  {
+   "id": "ACCESS-11",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Reject client attempts to overwrite owner, role, workspace, price or entitlement fields."
+  },
+  {
+   "id": "ACCESS-12",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Prevent access through direct APIs when buttons or pages are hidden in the interface."
+  },
+  {
+   "id": "ACCESS-13",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Require explicit platform privileges and audit trails for cross-customer administrative access."
+  },
+  {
+   "id": "ACCESS-14",
+   "area": "04 / Workspace isolation and authorization",
+   "text": "Test public share access, token revocation and object deletion without relying on unguessable IDs."
+  },
+  {
+   "id": "API-01",
+   "area": "05 / Application and API defenses",
+   "text": "Validate request fields, types, lengths, ranges and allowed values on the server."
+  },
+  {
+   "id": "API-02",
+   "area": "05 / Application and API defenses",
+   "text": "Use parameterized database queries; constrain user-selected sort columns and query operators."
+  },
+  {
+   "id": "API-03",
+   "area": "05 / Application and API defenses",
+   "text": "Encode output for its destination and sanitize supported rich text, Markdown and rendered AI output."
+  },
+  {
+   "id": "API-04",
+   "area": "05 / Application and API defenses",
+   "text": "Protect against SQL or NoSQL injection, stored XSS, template injection and command injection."
+  },
+  {
+   "id": "API-05",
+   "area": "05 / Application and API defenses",
+   "text": "Apply CSRF protection to cookie-authenticated state changes and test it independently of CORS."
+  },
+  {
+   "id": "API-06",
+   "area": "05 / Application and API defenses",
+   "text": "Use explicit allowed CORS origins where cross-origin access is required; maintain server authentication."
+  },
+  {
+   "id": "API-07",
+   "area": "05 / Application and API defenses",
+   "text": "Constrain server URL fetching against SSRF, redirects, private addresses and metadata endpoints."
+  },
+  {
+   "id": "API-08",
+   "area": "05 / Application and API defenses",
+   "text": "Prevent unsafe deserialization, prototype pollution, path traversal and arbitrary redirects."
+  },
+  {
+   "id": "API-09",
+   "area": "05 / Application and API defenses",
+   "text": "Allowlist mutation fields and reject unsupported methods, content types and oversized bodies."
+  },
+  {
+   "id": "API-10",
+   "area": "05 / Application and API defenses",
+   "text": "Limit pagination, search complexity, bulk requests, exports, regex work and expensive aggregation."
+  },
+  {
+   "id": "API-11",
+   "area": "05 / Application and API defenses",
+   "text": "Make retryable mutations idempotent where needed; test duplicate and reordered requests."
+  },
+  {
+   "id": "API-12",
+   "area": "05 / Application and API defenses",
+   "text": "Hide stack traces, internal queries, credentials and infrastructure details in public errors."
+  },
+  {
+   "id": "API-13",
+   "area": "05 / Application and API defenses",
+   "text": "Inventory legacy, debug, health, admin and undocumented routes and protect or remove them."
+  },
+  {
+   "id": "API-14",
+   "area": "05 / Application and API defenses",
+   "text": "Review all third-party callbacks and webhook endpoints for authentication, replay and abuse controls."
+  },
+  {
+   "id": "BROWSER-01",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Serve all authenticated pages and API traffic through HTTPS and redirect HTTP safely."
+  },
+  {
+   "id": "BROWSER-02",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Configure HSTS only after validating the affected hosts and any proposed subdomain or preload scope."
+  },
+  {
+   "id": "BROWSER-03",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Deploy a tested Content Security Policy, with appropriate script sources, nonces or hashes."
+  },
+  {
+   "id": "BROWSER-04",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Restrict framing through CSP frame-ancestors or an appropriate equivalent control."
+  },
+  {
+   "id": "BROWSER-05",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Set appropriate content-type, nosniff, referrer and Permissions-Policy headers."
+  },
+  {
+   "id": "BROWSER-06",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Disable shared caching for sensitive responses; verify cache headers and cache keys together."
+  },
+  {
+   "id": "BROWSER-07",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Remove mixed content and unsafe external links; restrict where browsers may send sensitive data."
+  },
+  {
+   "id": "BROWSER-08",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Protect DNS, registrar and hosting ownership with MFA and controlled administrator access."
+  },
+  {
+   "id": "BROWSER-09",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Review unused subdomains, dangling DNS, abandoned previews and domain takeover exposure."
+  },
+  {
+   "id": "BROWSER-10",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Verify secure domain redirects, certificate issuance, renewal and production auth callback URLs."
+  },
+  {
+   "id": "BROWSER-11",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Test header policies with Flurry, payments, embedded assets and login so protections remain usable."
+  },
+  {
+   "id": "BROWSER-12",
+   "area": "06 / Transport, browser headers and domain controls",
+   "text": "Inspect analytics and third-party scripts for unnecessary privileges and unexpected data collection."
+  },
+  {
+   "id": "SECRETS-01",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Scan the working tree, Git history, production bundle and build artifacts for secrets."
+  },
+  {
+   "id": "SECRETS-02",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Keep AI, database, payment, storage and administrator credentials in server-only secret stores."
+  },
+  {
+   "id": "SECRETS-03",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "If using Vite, treat VITE_-prefixed variables as public build inputs; never place privileged secrets there."
+  },
+  {
+   "id": "SECRETS-04",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Rotate any credential previously exposed; deleting its visible copy does not revoke it."
+  },
+  {
+   "id": "SECRETS-05",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Separate development, preview, staging and production credentials and data."
+  },
+  {
+   "id": "SECRETS-06",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Restrict service permissions, key scopes and environment access to the minimum required."
+  },
+  {
+   "id": "SECRETS-07",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Prove keys can be revoked and rotated without leaving alternate valid leaked credentials."
+  },
+  {
+   "id": "SECRETS-08",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Remove unused staff, collaborator, OAuth application and service-account access."
+  },
+  {
+   "id": "SECRETS-09",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Use locked dependencies and review package scripts, licenses, advisories and abandoned dependencies."
+  },
+  {
+   "id": "SECRETS-10",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Enable dependency, secret and code security scanning and triage findings by actual exposure."
+  },
+  {
+   "id": "SECRETS-11",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Protect main branches and release workflows; do not grant untrusted pull-request code production secrets."
+  },
+  {
+   "id": "SECRETS-12",
+   "area": "07 / Secrets, privileged accounts and supply chain",
+   "text": "Record third-party services, deployed dependency versions and an inventory suitable for incident response."
+  },
+  {
+   "id": "DATA-01",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Use a durable production database and object store for shared records and attachments."
+  },
+  {
+   "id": "DATA-02",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Verify localStorage and function memory are not the only source of truth for customer data."
+  },
+  {
+   "id": "DATA-03",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Enforce valid ownership references, foreign keys or equivalents, required fields and unique constraints."
+  },
+  {
+   "id": "DATA-04",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Use transactions or equivalent consistency controls for membership, ownership and multi-record changes."
+  },
+  {
+   "id": "DATA-05",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Test simultaneous task edits, repeated requests and conflicts without silent lost updates."
+  },
+  {
+   "id": "DATA-06",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Store consistent timestamps and test display time zones, midnight boundaries and due-date changes."
+  },
+  {
+   "id": "DATA-07",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Implement deletion, archival and restoration behavior without orphaned sensitive records."
+  },
+  {
+   "id": "DATA-08",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Require authenticated least-privilege database access and encrypted connections."
+  },
+  {
+   "id": "DATA-09",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Verify provider encryption at rest and appropriate access to backups, storage and encryption keys."
+  },
+  {
+   "id": "DATA-10",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Create useful indexes and examine representative slow queries and large-workspace access patterns."
+  },
+  {
+   "id": "DATA-11",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Configure safe connection pooling, query deadlines and bounded database concurrency."
+  },
+  {
+   "id": "DATA-12",
+   "area": "08 / Database integrity and durable storage",
+   "text": "Test schema changes and restore compatibility with the exact release database version."
+  },
+  {
+   "id": "FILES-01",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Authorize both upload initiation and subsequent read, download, delete and signed-link creation."
+  },
+  {
+   "id": "FILES-02",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Allowlist supported file types and validate extension, declared type, signature and parsed content."
+  },
+  {
+   "id": "FILES-03",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Limit file bytes, per-workspace storage, archive expansion, parser work and concurrent uploads."
+  },
+  {
+   "id": "FILES-04",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Rename stored objects safely and prevent path traversal, overwrite and executable-content exposure."
+  },
+  {
+   "id": "FILES-05",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Quarantine untrusted uploads until applicable malware or content checks complete."
+  },
+  {
+   "id": "FILES-06",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Use private storage by default and short-lived signed URLs with a documented revocation strategy."
+  },
+  {
+   "id": "FILES-07",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Serve risky content as attachments or from an isolated origin with safe response headers."
+  },
+  {
+   "id": "FILES-08",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Test uploaded SVG, HTML, polyglot files, malformed documents and compressed-file bombs."
+  },
+  {
+   "id": "FILES-09",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Keep file previews and extracted content within the original workspace permissions."
+  },
+  {
+   "id": "FILES-10",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Validate import schemas, row counts and ownership; preview destructive changes before applying them."
+  },
+  {
+   "id": "FILES-11",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Prevent spreadsheet formula injection in CSV exports and limit bulk export size and frequency."
+  },
+  {
+   "id": "FILES-12",
+   "area": "09 / Uploads, downloads, imports and exports",
+   "text": "Ensure deletion removes associated thumbnails, extracted text and applicable AI indexes or caches."
+  },
+  {
+   "id": "PRIVACY-01",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Map names, email, workspace content, IPs, telemetry, documents and AI prompts to storage and processors."
+  },
+  {
+   "id": "PRIVACY-02",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Specify purposes and applicable legal bases; collect only data needed for those purposes."
+  },
+  {
+   "id": "PRIVACY-03",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Publish accurate notices describing providers, AI processing, retention and cross-border handling."
+  },
+  {
+   "id": "PRIVACY-04",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Implement applicable consent and withdrawal flows without deceptive or preselected choices."
+  },
+  {
+   "id": "PRIVACY-05",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Verify analytics, cookie and session-replay settings match the markets and users served."
+  },
+  {
+   "id": "PRIVACY-06",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Mask personal data and sensitive inputs in logs, analytics, recordings and support tools."
+  },
+  {
+   "id": "PRIVACY-07",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Implement authenticated account and workspace export, correction and deletion workflows."
+  },
+  {
+   "id": "PRIVACY-08",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Propagate deletion or access revocation to documents, caches, embeddings and derived indexes."
+  },
+  {
+   "id": "PRIVACY-09",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Document backup retention and restore procedures that reapply deletion obligations."
+  },
+  {
+   "id": "PRIVACY-10",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Check AI provider retention, training settings, contracts and region requirements for customer data."
+  },
+  {
+   "id": "PRIVACY-11",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Define support-access approval, audit, expiry and least-privilege controls."
+  },
+  {
+   "id": "PRIVACY-12",
+   "area": "10 / Personal data, retention and customer controls",
+   "text": "Establish an appropriate age policy and assess any additional obligations if children can use the service."
+  },
+  {
+   "id": "FLURRY-01",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Identify what Flurry can read, create, edit, delete, export and send in each user role."
+  },
+  {
+   "id": "FLURRY-02",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Execute AI tool calls through authenticated server code with independent authorization."
+  },
+  {
+   "id": "FLURRY-03",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Allowlist tools and validate arguments and target resources; never rely on the model to grant access."
+  },
+  {
+   "id": "FLURRY-04",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Keep platform administrator, unrestricted SQL, arbitrary shell and unconstrained network tools unavailable."
+  },
+  {
+   "id": "FLURRY-05",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Bind confirmations to the exact sensitive action, target and arguments; recheck them at execution."
+  },
+  {
+   "id": "FLURRY-06",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Require suitable confirmation for deletion, bulk changes, invitations, exports and external messages."
+  },
+  {
+   "id": "FLURRY-07",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Test direct and indirect prompt injection through chat, tasks, uploads, retrieved text and tool results."
+  },
+  {
+   "id": "FLURRY-08",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Prevent unauthorized disclosure through links, external requests, exports or rendered response content."
+  },
+  {
+   "id": "FLURRY-09",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Treat model output as untrusted when rendering HTML or using it in queries and commands."
+  },
+  {
+   "id": "FLURRY-10",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Record tool request, caller, workspace, authorization result and actual outcome without storing secrets."
+  },
+  {
+   "id": "FLURRY-11",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Limit prompt bytes, tokens, output length, tool iterations, execution time and concurrent AI requests."
+  },
+  {
+   "id": "FLURRY-12",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Apply per-user and per-workspace quotas plus a global budget and independent emergency shutdown."
+  },
+  {
+   "id": "FLURRY-13",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Only claim an action succeeded after its backend operation succeeds; handle partial outcomes honestly."
+  },
+  {
+   "id": "FLURRY-14",
+   "area": "11 / Flurry authority, actions and AI security",
+   "text": "Test cancellation, provider timeout, rate limiting and AI failure while preserving task and board access."
+  },
+  {
+   "id": "AI-DATA-01",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Record the actual model, embeddings, retrieval stack, dataset sources and provider configuration."
+  },
+  {
+   "id": "AI-DATA-02",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Verify dataset, model and document licenses allow the intended commercial use."
+  },
+  {
+   "id": "AI-DATA-03",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Do not mix public training data with customer workspace content without an authorized processing basis."
+  },
+  {
+   "id": "AI-DATA-04",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Carry source ownership and access metadata into every chunk and embedding."
+  },
+  {
+   "id": "AI-DATA-05",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Authorize retrieval before content enters the prompt; test cross-workspace queries and stale permissions."
+  },
+  {
+   "id": "AI-DATA-06",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Limit retrieved chunks, context size and response caching to authorized scopes."
+  },
+  {
+   "id": "AI-DATA-07",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Validate ingestion sources and protect against poisoned documents and malicious connector input."
+  },
+  {
+   "id": "AI-DATA-08",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Show source references and uncertainty for factual workspace answers; test that cited records exist."
+  },
+  {
+   "id": "AI-DATA-09",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Provide honest insufficient-data and unavailable-source responses instead of invented workspace facts."
+  },
+  {
+   "id": "AI-DATA-10",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Keep a representative evaluation set for supported tasks, role boundaries and attack attempts."
+  },
+  {
+   "id": "AI-DATA-11",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Record model and prompt changes and compare quality, safety, cost and latency before promotion."
+  },
+  {
+   "id": "AI-DATA-12",
+   "area": "12 / Flurry knowledge, datasets and model governance",
+   "text": "Remove de-permissioned content from retrieval, response caches and derived indexes; verify the result."
+  },
+  {
+   "id": "FORECAST-01",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "State the intended forecast target, input features, training source and production data availability."
+  },
+  {
+   "id": "FORECAST-02",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Use deterministic reviewed rules if data does not yet justify a learned model; label the approach accurately."
+  },
+  {
+   "id": "FORECAST-03",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Benchmark a learned model against a simple baseline using a held-out time period."
+  },
+  {
+   "id": "FORECAST-04",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Avoid leakage from future completion data, target fields or unavailable-at-prediction-time inputs."
+  },
+  {
+   "id": "FORECAST-05",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Test new projects, tiny teams, missing estimates and sparse historical data."
+  },
+  {
+   "id": "FORECAST-06",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Test overdue, completed, cancelled, reopened and blocked tasks and changing dependencies."
+  },
+  {
+   "id": "FORECAST-07",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Show uncertainty, assumptions, update time and an insufficient-data state where appropriate."
+  },
+  {
+   "id": "FORECAST-08",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Verify progress, completed work and remaining effort definitions stay consistent across charts."
+  },
+  {
+   "id": "FORECAST-09",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Measure forecast error by horizon and project type and monitor changing input distributions."
+  },
+  {
+   "id": "FORECAST-10",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Allow justified human correction without silently rewriting historical results."
+  },
+  {
+   "id": "FORECAST-11",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Enforce workspace permissions on forecast inputs, features, outputs and member profile graphs."
+  },
+  {
+   "id": "FORECAST-12",
+   "area": "13 / Deadline predictions and analytical correctness",
+   "text": "Do not present employee rankings or performance judgments as objective truth without validation and review."
+  },
+  {
+   "id": "LIVE-01",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Authorize live channel subscriptions, reconnects and individual messages where required."
+  },
+  {
+   "id": "LIVE-02",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Disconnect or revoke access when membership or roles change and sessions expire."
+  },
+  {
+   "id": "LIVE-03",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Test two people editing the same task and board; provide conflict resolution or safe version checks."
+  },
+  {
+   "id": "LIVE-04",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Prevent duplicate task creation after network retry, reconnect or repeated clicks."
+  },
+  {
+   "id": "LIVE-05",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Recover missed updates using a durable state reload, version cursor or supported equivalent."
+  },
+  {
+   "id": "LIVE-06",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Use a real-time service and protocol supported by the chosen hosting runtime."
+  },
+  {
+   "id": "LIVE-07",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Define behavior for offline edits, reconnection and stale optimistic interface state."
+  },
+  {
+   "id": "LIVE-08",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Deliver notifications only to authorized recipients and avoid sensitive previews outside the workspace."
+  },
+  {
+   "id": "LIVE-09",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Handle preferences, mute settings, digest frequency, duplicates and delivery failures."
+  },
+  {
+   "id": "LIVE-10",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Validate mentions, invited addresses and recipients before applying side effects."
+  },
+  {
+   "id": "LIVE-11",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Configure email sender authentication and test delivery, bounce and complaint handling."
+  },
+  {
+   "id": "LIVE-12",
+   "area": "14 / Collaboration, real-time state and notifications",
+   "text": "Test long-lived collaboration during deploys, provider outages and authentication refresh."
+  },
+  {
+   "id": "TRAFFIC-01",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Define expected active users, requests per second, bursts, geography and peak operating periods."
+  },
+  {
+   "id": "TRAFFIC-02",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Configure appropriate edge firewall, WAF and bot controls; test legitimate traffic and false positives."
+  },
+  {
+   "id": "TRAFFIC-03",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Protect login, reset, invitations, public forms, API, search, uploads, exports and AI separately."
+  },
+  {
+   "id": "TRAFFIC-04",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Apply user, workspace, endpoint and global quotas; use IP limits as one signal, not the only signal."
+  },
+  {
+   "id": "TRAFFIC-05",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Use atomic shared counters or a supported distributed limiter across instances and regions."
+  },
+  {
+   "id": "TRAFFIC-06",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Trust forwarded IP headers only through documented trusted proxy behavior."
+  },
+  {
+   "id": "TRAFFIC-07",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Bound request bytes, processing work, concurrent requests, AI calls and queued jobs."
+  },
+  {
+   "id": "TRAFFIC-08",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Return useful 429 or overload responses with retry guidance; avoid infinite client retries."
+  },
+  {
+   "id": "TRAFFIC-09",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Prevent a single workspace from consuming all connections, tokens, storage or worker capacity."
+  },
+  {
+   "id": "TRAFFIC-10",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Secure direct backend, storage and alternate deployment routes so attackers cannot bypass admission controls."
+  },
+  {
+   "id": "TRAFFIC-11",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Test expensive low-volume abuse, signup spam, credential stuffing and invitation floods."
+  },
+  {
+   "id": "TRAFFIC-12",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Rate-limit non-HTTP workloads such as live messages and background-job submissions."
+  },
+  {
+   "id": "TRAFFIC-13",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Define rate-limiter outage behavior without silently disabling critical access or abuse controls."
+  },
+  {
+   "id": "TRAFFIC-14",
+   "area": "15 / Traffic admission, abuse controls and rate limits",
+   "text": "Document emergency blocking, challenge activation, AI shutdown and controlled service resumption."
+  },
+  {
+   "id": "CACHE-01",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Serve versioned static assets through an appropriate CDN and use compatible cache lifetimes."
+  },
+  {
+   "id": "CACHE-02",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Avoid shared caching of private dashboards, sensitive responses and session-bearing pages."
+  },
+  {
+   "id": "CACHE-03",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Include all response-varying identity, workspace, permission and input factors in applicable cache keys."
+  },
+  {
+   "id": "CACHE-04",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Invalidate cached permissions, membership, files and derived results on relevant changes."
+  },
+  {
+   "id": "CACHE-05",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Test cache poisoning and cache deception against authenticated routes and rewritten paths."
+  },
+  {
+   "id": "CACHE-06",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Ensure all custom domains and alternate deployment URLs apply the intended cache and security rules."
+  },
+  {
+   "id": "CACHE-07",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Paginate large lists, debounce suitable searches and avoid polling amplification."
+  },
+  {
+   "id": "CACHE-08",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Compress and resize images, textures and models and lazy-load expensive optional interfaces."
+  },
+  {
+   "id": "CACHE-09",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Limit JavaScript and 3D asset transfer; record cold-cache performance on representative mobile networks."
+  },
+  {
+   "id": "CACHE-10",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Provide an accessible lightweight fallback for unavailable WebGL and constrained devices."
+  },
+  {
+   "id": "CACHE-11",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Test deployments with old cached pages so new and old assets do not break navigation."
+  },
+  {
+   "id": "CACHE-12",
+   "area": "16 / CDN, cache safety and frontend delivery",
+   "text": "Verify any service worker cannot retain private responses across logout or account switching."
+  },
+  {
+   "id": "CAPACITY-01",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Record the real database, function, storage, email, real-time and AI provider limits and quotas."
+  },
+  {
+   "id": "CAPACITY-02",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Align application concurrency with the database connection budget and safe query throughput."
+  },
+  {
+   "id": "CAPACITY-03",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Use appropriate hosting and database regions and measure user latency in intended markets."
+  },
+  {
+   "id": "CAPACITY-04",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Move slow imports, indexing, notifications and large exports into durable background processing as needed."
+  },
+  {
+   "id": "CAPACITY-05",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Bound queue depth, worker concurrency, job size and retries and expose job progress."
+  },
+  {
+   "id": "CAPACITY-06",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Make jobs safe to retry and handle duplicate delivery without repeated side effects."
+  },
+  {
+   "id": "CAPACITY-07",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Preserve authorized workspace context and revalidate time-sensitive permissions in workers."
+  },
+  {
+   "id": "CAPACITY-08",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Use finite dependency timeouts, bounded retries, exponential backoff and jitter."
+  },
+  {
+   "id": "CAPACITY-09",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Implement suitable circuit breakers, dead-letter handling and operator recovery."
+  },
+  {
+   "id": "CAPACITY-10",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Define degraded operation: unavailable AI must not make ordinary task management unusable."
+  },
+  {
+   "id": "CAPACITY-11",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Exercise cold starts, database slowdown, connection exhaustion and provider quota errors."
+  },
+  {
+   "id": "CAPACITY-12",
+   "area": "17 / Backend capacity, queues and dependency resilience",
+   "text": "Do not rely on instance memory, local function disk or untracked post-response work for durable jobs."
+  },
+  {
+   "id": "LOAD-01",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Use a controlled production-like test environment with synthetic or authorized sanitized data."
+  },
+  {
+   "id": "LOAD-02",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Match database schema, indexes, auth rules, region and resource sizes to the intended launch."
+  },
+  {
+   "id": "LOAD-03",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Include realistic mixes of reads, writes, collaboration, uploads, search and AI requests."
+  },
+  {
+   "id": "LOAD-04",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Start with a small smoke test and verify every simulated journey is actually completing correctly."
+  },
+  {
+   "id": "LOAD-05",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Run expected peak load, sustained higher load, short spikes and a multi-hour soak."
+  },
+  {
+   "id": "LOAD-06",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Find and record the capacity break point with limits that prevent uncontrolled cost or damage."
+  },
+  {
+   "id": "LOAD-07",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Track p50, p95 and p99 latency, unexpected errors, timeouts and intentional throttling separately."
+  },
+  {
+   "id": "LOAD-08",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Observe database connections, slow queries, lock waits, queue depth and provider token throughput."
+  },
+  {
+   "id": "LOAD-09",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Verify request integrity, task correctness and workspace isolation during and after overload."
+  },
+  {
+   "id": "LOAD-10",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Test bot-like traffic, long-running requests, public-link abuse and repeated expensive requests."
+  },
+  {
+   "id": "LOAD-11",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Verify graceful shedding, finite retries and automatic recovery when load subsides."
+  },
+  {
+   "id": "LOAD-12",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Simulate AI, email, database, object-store and real-time outages in controlled tests."
+  },
+  {
+   "id": "LOAD-13",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Record tested build, environment, traffic mix, capacity, cost and pass or fail thresholds."
+  },
+  {
+   "id": "LOAD-14",
+   "area": "18 / Load, stress, spike, soak and failure tests",
+   "text": "Do not publish supported user counts based only on static homepage traffic or daily visitor totals."
+  },
+  {
+   "id": "COST-01",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Set an explicit monthly operating budget and calculate the cost of the tested traffic mix."
+  },
+  {
+   "id": "COST-02",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Measure hosting, database, storage, egress, email, logs, monitoring and AI costs separately."
+  },
+  {
+   "id": "COST-03",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Calculate per-active-workspace and per-AI-interaction costs with expected and adverse usage."
+  },
+  {
+   "id": "COST-04",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Configure hosting spend alerts and the chosen enforcement action; a budget value alone is insufficient."
+  },
+  {
+   "id": "COST-05",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Account for enforcement delays and costs excluded from a hosting spend cap."
+  },
+  {
+   "id": "COST-06",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Set independent AI provider, gateway, email and storage quotas or application-side spending controls."
+  },
+  {
+   "id": "COST-07",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Stop AI tool loops and retry storms before they consume unbounded tokens or requests."
+  },
+  {
+   "id": "COST-08",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Reserve and settle usage atomically enough to prevent concurrent requests bypassing quotas."
+  },
+  {
+   "id": "COST-09",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Monitor signup, invitation, download and export abuse that generates provider fees."
+  },
+  {
+   "id": "COST-10",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Test emergency cost controls and understand whether they pause one feature or the whole product."
+  },
+  {
+   "id": "COST-11",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Plan customer messaging and safe recovery if a budget action makes production unavailable."
+  },
+  {
+   "id": "COST-12",
+   "area": "19 / Budgets, metering and financial abuse",
+   "text": "Choose hosting and vendor plans whose permitted use and actual limits fit a commercial launch."
+  },
+  {
+   "id": "BILLING-01",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "If billing is deferred, keep checkout and paid entitlement claims unavailable until implemented."
+  },
+  {
+   "id": "BILLING-02",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Use a suitable hosted payment provider and avoid storing raw card details in Niveloft."
+  },
+  {
+   "id": "BILLING-03",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Select prices, plans, discounts and customer-workspace mapping from trusted server records."
+  },
+  {
+   "id": "BILLING-04",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Verify payment webhooks with provider signatures, authentic raw bodies and recency checks."
+  },
+  {
+   "id": "BILLING-05",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Handle repeated and reordered webhook events idempotently and persist processing state."
+  },
+  {
+   "id": "BILLING-06",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Grant entitlements from verified provider state, not a browser success page."
+  },
+  {
+   "id": "BILLING-07",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Test new subscription, renewal, failed payment, upgrade, downgrade, cancellation and refund."
+  },
+  {
+   "id": "BILLING-08",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Define proration, trial expiry, grace periods and seat billing behavior accurately."
+  },
+  {
+   "id": "BILLING-09",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Enforce feature and seat limits on the server for web, API, jobs and AI actions."
+  },
+  {
+   "id": "BILLING-10",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Make webhook processing durable before acknowledging receipt and provide failed-event recovery."
+  },
+  {
+   "id": "BILLING-11",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Reconcile subscription records with the provider and test manual recovery after an outage."
+  },
+  {
+   "id": "BILLING-12",
+   "area": "20 / Payments, subscriptions and commercial entitlement",
+   "text": "Publish clear price, currency, tax, invoice, refund and cancellation terms appropriate to the business."
+  },
+  {
+   "id": "RELEASE-01",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Create a reproducible production build from the tagged or recorded commit and lockfile."
+  },
+  {
+   "id": "RELEASE-02",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Run appropriate type checks, linting, automated tests and security checks as release gates."
+  },
+  {
+   "id": "RELEASE-03",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Protect deployment credentials and require controlled approval for production promotions."
+  },
+  {
+   "id": "RELEASE-04",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Verify development and preview builds cannot read or write customer production data."
+  },
+  {
+   "id": "RELEASE-05",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Protect preview deployments and avoid indexing private development or customer workspace pages."
+  },
+  {
+   "id": "RELEASE-06",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Configure the exact frontend build, API routes, redirects and runtime settings required by the project."
+  },
+  {
+   "id": "RELEASE-07",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "If the frontend is an SPA, test direct visits and refreshes on all nested routes."
+  },
+  {
+   "id": "RELEASE-08",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Validate environment variables and fail clearly when required production settings are absent."
+  },
+  {
+   "id": "RELEASE-09",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Set correct production auth callbacks, webhook URLs, email links and public application URLs."
+  },
+  {
+   "id": "RELEASE-10",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Test database migrations with realistic data and use backward-compatible changes where rollback needs them."
+  },
+  {
+   "id": "RELEASE-11",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Verify old deployments remain safe against the migrated schema and queues."
+  },
+  {
+   "id": "RELEASE-12",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Practice application rollback separately from data restoration; record when restoration is required."
+  },
+  {
+   "id": "RELEASE-13",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Remove temporary bypasses, debug routes, default credentials and production demo seeding."
+  },
+  {
+   "id": "RELEASE-14",
+   "area": "21 / Build, CI/CD, environments and migrations",
+   "text": "Check commercial hosting eligibility, current plan limits and required security features before release."
+  },
+  {
+   "id": "OBSERVE-01",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Monitor public uptime and authenticated critical journeys from appropriate external locations."
+  },
+  {
+   "id": "OBSERVE-02",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Track browser errors, API failures, latency, database health, queue backlog and dependency failures."
+  },
+  {
+   "id": "OBSERVE-03",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Monitor login failures, denied access, role changes, large exports and suspicious traffic patterns."
+  },
+  {
+   "id": "OBSERVE-04",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Track Flurry tool outcomes, AI error rates, tokens, cost, latency and policy violations."
+  },
+  {
+   "id": "OBSERVE-05",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Record sensitive operations with actor, workspace, action, object, timestamp and result."
+  },
+  {
+   "id": "OBSERVE-06",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Protect audit logs against unauthorized read, alteration and deletion with suitable retention controls."
+  },
+  {
+   "id": "OBSERVE-07",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Redact credentials, tokens, payment information and unnecessary personal or document content."
+  },
+  {
+   "id": "OBSERVE-08",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Use consistent timestamps and request or trace identifiers across important dependencies."
+  },
+  {
+   "id": "OBSERVE-09",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Configure alert thresholds for outages, elevated failures, cost growth and capacity exhaustion."
+  },
+  {
+   "id": "OBSERVE-10",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Prove an actionable test alert reaches the designated operator and can be acknowledged."
+  },
+  {
+   "id": "OBSERVE-11",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Separate expected throttling and denied requests from unexpected product failures in reporting."
+  },
+  {
+   "id": "OBSERVE-12",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Apply legally and contractually appropriate log retention, access and storage-location requirements."
+  },
+  {
+   "id": "OBSERVE-13",
+   "area": "22 / Monitoring, logging and audit evidence",
+   "text": "Provide customer-visible service status and an accurate incident communication channel."
+  },
+  {
+   "id": "RECOVERY-01",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Set recovery point and recovery time objectives that match the promised service and data value."
+  },
+  {
+   "id": "RECOVERY-02",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Back up the database, attachments and required configuration, not only the source repository."
+  },
+  {
+   "id": "RECOVERY-03",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Enable suitable point-in-time recovery or equivalent coverage for important production records."
+  },
+  {
+   "id": "RECOVERY-04",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Protect backup access and encryption and separate it from ordinary application write access."
+  },
+  {
+   "id": "RECOVERY-05",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Restore a recent backup into a separate controlled environment before accepting customer data."
+  },
+  {
+   "id": "RECOVERY-06",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Measure restoration time and verify records, relationships, files, permissions and customer ownership."
+  },
+  {
+   "id": "RECOVERY-07",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Reapply deletions and retention rules when restoring historical data."
+  },
+  {
+   "id": "RECOVERY-08",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Test a tenant-scoped recovery without exposing unrelated customers from a shared backup."
+  },
+  {
+   "id": "RECOVERY-09",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Document incident roles, severity, containment, investigation, recovery and communication."
+  },
+  {
+   "id": "RECOVERY-10",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Practice revoking keys, invalidating sessions, restricting exports and disabling Flurry actions."
+  },
+  {
+   "id": "RECOVERY-11",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Preserve necessary evidence under controlled access and applicable legal retention requirements."
+  },
+  {
+   "id": "RECOVERY-12",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Identify applicable regulator and customer notification deadlines and escalation contacts."
+  },
+  {
+   "id": "RECOVERY-13",
+   "area": "23 / Backups, restoration and incident response",
+   "text": "Schedule recurring restore drills, access reviews, dependency updates and incident-plan exercises."
+  },
+  {
+   "id": "UX-01",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Test complete journeys on Chrome, Safari, Firefox, Edge, iOS Safari and Android Chrome as supported."
+  },
+  {
+   "id": "UX-02",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Check mobile layouts, safe areas, small screens, browser zoom and long names or task titles."
+  },
+  {
+   "id": "UX-03",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Provide accurate loading, empty, offline, permission-denied, timeout and failure states."
+  },
+  {
+   "id": "UX-04",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Preserve work after failed saves and communicate optimistic-update rollback clearly."
+  },
+  {
+   "id": "UX-05",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Implement keyboard navigation, visible focus, appropriate labels and screen-reader announcements."
+  },
+  {
+   "id": "UX-06",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Review contrast, target sizes, meaningful alt text and accessible dialogs against applicable WCAG criteria."
+  },
+  {
+   "id": "UX-07",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Respect reduced motion and avoid scroll trapping, excessive motion or inaccessible animation."
+  },
+  {
+   "id": "UX-08",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Test the mountain and layered 3D experience for clipping, dissection, layout shifts and navigation interference."
+  },
+  {
+   "id": "UX-09",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Limit GPU, CPU and memory use and provide a lightweight fallback on unsuitable devices."
+  },
+  {
+   "id": "UX-10",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Ensure Flurry can be collapsed, dismissed and used without covering controls or stealing focus."
+  },
+  {
+   "id": "UX-11",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Provide accessible alternatives to 3D charts, dragging and color-only information."
+  },
+  {
+   "id": "UX-12",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Measure LCP, INP and CLS with representative lab tests before launch and real-user data after launch."
+  },
+  {
+   "id": "UX-13",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Review spelling, spacing, typography, help text, error wording and all transactional messages."
+  },
+  {
+   "id": "UX-14",
+   "area": "24 / Interface, 3D experience and accessibility",
+   "text": "Keep promised interactions responsive when optional animations or AI services fail."
+  },
+  {
+   "id": "LEGAL-01",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Identify the operating entity, customer contracts, target markets and accountable product contact."
+  },
+  {
+   "id": "LEGAL-02",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Obtain qualified review of applicable Indian privacy and cybersecurity duties and their commencement dates."
+  },
+  {
+   "id": "LEGAL-03",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Assess CERT-In reporting, point-of-contact, time-synchronization and log-retention obligations for the entity."
+  },
+  {
+   "id": "LEGAL-04",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Assess GDPR, transfer safeguards or other foreign-market requirements if the product triggers them."
+  },
+  {
+   "id": "LEGAL-05",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Publish Terms, Privacy Policy, acceptable-use rules and applicable cookie or consent notices."
+  },
+  {
+   "id": "LEGAL-06",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Document processors and subprocessors, data-processing contracts and customer confidentiality obligations."
+  },
+  {
+   "id": "LEGAL-07",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Define data ownership, permitted AI processing, retention, deletion and export commitments."
+  },
+  {
+   "id": "LEGAL-08",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Review dataset, model, font, icon, photograph, library and 3D-asset commercial licenses."
+  },
+  {
+   "id": "LEGAL-09",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Do not claim SOC 2, ISO certification, perfect security or measured uptime without supporting evidence."
+  },
+  {
+   "id": "LEGAL-10",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Set realistic support hours, response targets and any service-level agreement or credits."
+  },
+  {
+   "id": "LEGAL-11",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Review payments, invoices, tax, refund, cancellation and dispute processes with appropriate advisers."
+  },
+  {
+   "id": "LEGAL-12",
+   "area": "25 / Legal, trust, intellectual property and commercial policies",
+   "text": "Create a reachable security disclosure contact, vulnerability intake and correction workflow."
+  },
+  {
+   "id": "VERIFY-01",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Test signup through onboarding, workspace creation, invitation, collaboration, Flurry and account deletion."
+  },
+  {
+   "id": "VERIFY-02",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Use at least two separate workspaces and every role to test permission boundaries."
+  },
+  {
+   "id": "VERIFY-03",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Include expired sessions, banned accounts, revoked invitations, removed members and deleted objects."
+  },
+  {
+   "id": "VERIFY-04",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Exercise slow networks, disconnections, double clicks, browser back, multiple tabs and second devices."
+  },
+  {
+   "id": "VERIFY-05",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Review critical code for auth, authorization, uploads, billing, secrets, migrations and AI tool execution."
+  },
+  {
+   "id": "VERIFY-06",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Use appropriate static, dependency, secret and dynamic security checks and triage their findings."
+  },
+  {
+   "id": "VERIFY-07",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Commission scoped independent penetration testing before broad commercial use with sensitive customer data."
+  },
+  {
+   "id": "VERIFY-08",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Retest fixes and retain evidence; treat automated scanner success as one signal, not a full audit."
+  },
+  {
+   "id": "VERIFY-09",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Assess web, API and AI controls against the applicable OWASP verification and risk guidance."
+  },
+  {
+   "id": "VERIFY-10",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Test authorization during cache reuse, real-time events, asynchronous execution and backup restoration."
+  },
+  {
+   "id": "VERIFY-11",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Verify no unintended data appears in bundles, network responses, analytics, source maps or error reports."
+  },
+  {
+   "id": "VERIFY-12",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Resolve critical or high security findings and any issue enabling account takeover, data loss or data leakage."
+  },
+  {
+   "id": "VERIFY-13",
+   "area": "26 / Manual security review and complete product testing",
+   "text": "Classify remaining defects, owners, residual risk, mitigation and retest dates before release."
+  },
+  {
+   "id": "OPERATE-01",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Start with a controlled pilot, review actual usage and expand within measured safe capacity."
+  },
+  {
+   "id": "OPERATE-02",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Record the release commit, configurations, migration versions and security or capacity evidence."
+  },
+  {
+   "id": "OPERATE-03",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Confirm a named operator can respond during the launch window and knows all emergency controls."
+  },
+  {
+   "id": "OPERATE-04",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Prepare onboarding, help, error troubleshooting and honest supported-feature documentation."
+  },
+  {
+   "id": "OPERATE-05",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Use verified product analytics for activation and failures without collecting unnecessary customer content."
+  },
+  {
+   "id": "OPERATE-06",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Publish correct public metadata, social previews and a sitemap only for appropriate public routes."
+  },
+  {
+   "id": "OPERATE-07",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Protect private routes with authentication; robots directives are not access controls."
+  },
+  {
+   "id": "OPERATE-08",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Monitor the first customer journeys, provider costs, rejected traffic and alert quality after release."
+  },
+  {
+   "id": "OPERATE-09",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Set documented rollback triggers and pause expansion when integrity, security or availability gates fail."
+  },
+  {
+   "id": "OPERATE-10",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Review licenses, capacity, access, dependencies, AI evaluations, backups and privacy policies periodically."
+  },
+  {
+   "id": "OPERATE-11",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Provide a support channel, customer export or exit path and a procedure for urgent security reports."
+  },
+  {
+   "id": "OPERATE-12",
+   "area": "27 / Launch, support and continuing operation",
+   "text": "Treat each material feature, provider, model or permission change as requiring renewed relevant verification."
+  }
+ ]
+}
