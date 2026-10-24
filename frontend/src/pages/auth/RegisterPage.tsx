@@ -213,6 +213,7 @@ export function RegisterPage() {
           <Button type="submit" size="lg" className="w-full" loading={isLoading}>
             Create account
           </Button>
+          {isLoading && <p role="status" className="text-center text-xs text-muted">Creating your account… Please keep this tab open.</p>}
         </form>
       )}
     </AuthLayout>

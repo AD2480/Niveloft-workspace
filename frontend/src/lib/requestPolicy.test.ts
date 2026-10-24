@@ -9,6 +9,8 @@ describe('request policy', () => {
     expect(timeoutFor('/ai/status', undefined)).toBe(TIMEOUT_MS.default);
     expect(timeoutFor('/tasks/1/submissions', new FormData())).toBe(TIMEOUT_MS.upload);
     expect(timeoutFor('/projects', { a: 1 })).toBe(TIMEOUT_MS.default);
+    expect(timeoutFor('/auth/login', {})).toBe(TIMEOUT_MS.auth);
+    expect(timeoutFor('/auth/register', {})).toBe(TIMEOUT_MS.auth);
   });
 
   it('retries reads on lost connections, timeouts and busy servers, twice at most', () => {
@@ -27,6 +29,14 @@ describe('request policy', () => {
 
   it('never retries AI requests', () => {
     expect(retryDelay({ ...base, url: '/projects/1/ai/ask', method: 'POST', status: 'TIMEOUT_ERROR', hasIdempotencyKey: true })).toBeNull();
+  });
+
+  it('never resends credentials or registration after an ambiguous response', () => {
+    for (const url of ['/auth/login', '/auth/register']) {
+      for (const status of ['FETCH_ERROR', 'TIMEOUT_ERROR', 503, 429]) {
+        expect(retryDelay({ ...base, url, method: 'POST', status, hasIdempotencyKey: true })).toBeNull();
+      }
+    }
   });
 
   it('waits as long as a 429 asks, but not more than 10 seconds', () => {

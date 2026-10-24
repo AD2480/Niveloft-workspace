@@ -19,4 +19,5 @@ USER projectflow
 ENV STORAGE_DIR=/app/data/uploads \
     JAVA_OPTS="-XX:MaxRAMPercentage=75"
 EXPOSE 8080
-ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]
+# Limit JIT compilation during startup on small shared-CPU hosts. JAVA_OPTS can override it.
+ENTRYPOINT ["sh", "-c", "exec java -XX:TieredStopAtLevel=1 $JAVA_OPTS -jar /app/app.jar"]

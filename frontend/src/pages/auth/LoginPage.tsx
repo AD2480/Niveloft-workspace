@@ -133,6 +133,7 @@ export function LoginPage() {
         <Button type="submit" size="lg" className="w-full" loading={isLoading}>
           Log in
         </Button>
+        {isLoading && <p role="status" className="text-center text-xs text-muted">Signing you in… Please keep this tab open.</p>}
       </form>
     </AuthLayout>
   );

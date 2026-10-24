@@ -10,6 +10,8 @@ import { newIdempotencyKey, retryDelay, timeoutFor, withHeader } from '@/lib/req
 import { sessionExpired, tokenRefreshed } from '@/features/auth/authSlice';
 import { isKept } from '@/features/auth/keptSignIn';
 import { renewKeptSignIn } from '@/features/auth/renewal';
+import { backendStartup } from '@/features/auth/backendStartup';
+import { withRequestDeadline } from '@/lib/requestDeadline';
 import type { ApiResponse, User } from './types';
 
 interface StateWithAuth {
@@ -57,6 +59,7 @@ const mockBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryErro
 
 /** A 401 from these isn't an ended sign-in: wrong credentials, or (signing out) nothing left to sign out. */
 const PUBLIC_ENDPOINTS = new Set(['login', 'register', 'logout']);
+const STARTUP_ENDPOINTS = new Set(['login', 'register', 'authOptions']);
 
 /**
  * Every request: a timeout (longer for uploads and AI), an Idempotency-Key on every change (so a
@@ -64,13 +67,23 @@ const PUBLIC_ENDPOINTS = new Set(['login', 'register', 'logout']);
  * connection drops, the request times out, the server is busy or rate-limits (see requestPolicy).
  */
 const resilientQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extra) => {
+  if (!USE_TEST_API && STARTUP_ENDPOINTS.has(api.endpoint)) {
+    try {
+      const ready = await withRequestDeadline(() => backendStartup.check(), 301_000, api.signal);
+      if (!ready) return { error: { status: 503, data: { status: 503, code: 'BACKEND_UNAVAILABLE', message: 'Niveloft is still unavailable. Please try again in a moment. Your details are still in this form.' } } };
+    } catch {
+      return { error: { status: 'TIMEOUT_ERROR', error: 'The server did not become ready in time.' } };
+    }
+  }
   let a: FetchArgs = typeof args === 'string' ? { url: args } : { ...args };
   const method = (a.method ?? 'GET').toUpperCase();
   const write = method !== 'GET' && method !== 'HEAD';
   if (write) a = { ...a, headers: withHeader(a.headers as Record<string, string> | undefined, 'Idempotency-Key', newIdempotencyKey()) };
   a.timeout ??= timeoutFor(a.url, a.body);
   for (let attempt = 0; ; attempt++) {
-    const result = USE_TEST_API ? await mockBaseQuery(a, api, extra) : await httpBaseQuery(a, api, extra);
+    const result = USE_TEST_API ? await mockBaseQuery(a, api, extra) : await withRequestDeadline(
+      async (signal) => httpBaseQuery({ ...a, timeout: 0 }, { ...api, signal }, extra), a.timeout, api.signal,
+    ).catch((error: unknown) => ({ error: { status: (error instanceof DOMException && error.name === 'TimeoutError' ? 'TIMEOUT_ERROR' : 'FETCH_ERROR') as 'TIMEOUT_ERROR' | 'FETCH_ERROR', error: String(error) }, meta: undefined }));
     if (!result.error) return result;
     const retryAfter = Number((result.meta as { response?: Response } | undefined)?.response?.headers.get('Retry-After') ?? '') || null;
     const wait = retryDelay({ status: result.error.status, method, url: a.url, attempt, hasIdempotencyKey: write, retryAfter });

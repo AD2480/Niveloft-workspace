@@ -2,7 +2,7 @@
  * How the app talks to the API when things go wrong: how long to wait, what to retry, and how
  * to make retries safe. Pure functions, so they're easy to test.
  *
- * - Timeouts: 20 s for ordinary calls, 2 min for uploads, 200 s for AI (a local model can be slow).
+ * - Timeouts: 20 s for ordinary calls, 45 s for sign-in/up, 2 min for uploads, 200 s for AI.
  * - Retries: up to twice, with growing waits, for a lost connection, a timeout, a busy server
  *   (502/503/504) or a rate limit (429, waiting as long as the server asks, up to 10 s).
  *   Reads are always safe to retry; changes only because each carries an Idempotency-Key, so
@@ -10,7 +10,7 @@
  *   costs, and the person can ask again.
  */
 
-export const TIMEOUT_MS = { default: 20_000, upload: 120_000, ai: 200_000 };
+export const TIMEOUT_MS = { default: 20_000, auth: 45_000, upload: 120_000, ai: 200_000 };
 export const MAX_RETRIES = 2;
 const MAX_RETRY_AFTER_MS = 10_000;
 
@@ -19,6 +19,7 @@ export function isAiUrl(url: string): boolean {
 }
 
 export function timeoutFor(url: string, body: unknown): number {
+  if (/\/auth\/(login|register)(?:\?|$)/.test(url)) return TIMEOUT_MS.auth;
   if (isAiUrl(url)) return TIMEOUT_MS.ai;
   if (typeof FormData !== 'undefined' && body instanceof FormData) return TIMEOUT_MS.upload;
   return TIMEOUT_MS.default;
@@ -36,6 +37,9 @@ export interface RetryInput {
 
 /** Milliseconds to wait before retrying, or null to give up. */
 export function retryDelay({ status, method, url, attempt, hasIdempotencyKey, retryAfter }: RetryInput): number | null {
+  // Auth writes aren't covered by the signed-in idempotency store. Never replay credentials or
+  // registration after an ambiguous timeout; readiness is retried before sending them instead.
+  if (/\/auth\/(login|register)(?:\?|$)/.test(url)) return null;
   if (attempt >= MAX_RETRIES || isAiUrl(url)) return null;
   const read = method === 'GET' || method === 'HEAD';
   if (!read && !hasIdempotencyKey) return null;
